@@ -1,37 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Trashify 🌱
 
-## Getting Started
+**Trashify** is an open-source app that helps you find trash bins near you. Whether you're exploring a new city or just trying to keep your area clean, Trashify provides a simple way to locate trash bins efficiently.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Find Trash Bins:** Easily locate trash bins around your current location.
+- **Map Integration:** Visualize trash bin locations on an interactive map.
+- **User Contributions:** Contribute to the map by adding new trash bin locations.
+- **Search Functionality:** Search for trash bins in specific areas.
+- **Open Source:** Contribute to the project or customize it to fit your needs.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To get started with Trashify, follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/trashify.git
+   ```
 
-## Learn More
+2. **Navigate into the project directory:**
+   ```bash
+   cd trashify
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Install the dependencies:**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Start the development server:**
+   ```bash
+   npm run start
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   The app should now be running at `http://localhost:3000`.
 
-## Deploy on Vercel
+## Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Open Trashify:** Launch the app in your browser.
+2. **Locate Trash Bins:** Use the map to find nearby trash bins or use the search feature to find bins in a specific area.
+3. **Add New Bins:** If you come across a trash bin that's not on the map, add it using the "Add Bin" feature.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# trashify
+## Contributing
+
+Contributions are welcome! To contribute to Trashify:
+
+1. **Fork the repository.**
+2. **Create a new branch for your feature or bug fix.**
+3. **Commit your changes.**
+4. **Push your changes to your forked repository.**
+5. **Open a pull request with a clear description of your changes.**
+
+## License
+
+Trashify is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For questions or feedback, please reach out to us at [hemitvpatel@gmail.com](mailto:hemitvpatel@gmail.com).
+
+## Acknowledgments
+
+- **React:** For building the user interface.
+- **Leaflet:** For the map functionality.
+- **OpenStreetMap:** For providing the map data.
+
+---
