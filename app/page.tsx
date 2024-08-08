@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ShareModal from './components/ShareModal';
 import Share from './assets/regular/share.svg';
 import { authenticateClient } from './lib/auth';
-import Search from './assets/regular/search.svg'
+import Search from './assets/regular/search-1.svg'
 import { useRouter } from 'next/navigation';
 
 const HomeView = () => {

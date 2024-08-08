@@ -22,6 +22,7 @@ const Header = () => {
             <div className='flex'>
                 <LinkItem title='Home' target_path='/' />
                 <LinkItem title='Post' target_path='/post' />
+                <LinkItem title='Manage' target_path='/manage' />
             </div>
             <img
                 className="rounded-full w-7 h-7 mr-10"
