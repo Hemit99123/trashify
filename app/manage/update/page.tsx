@@ -149,7 +149,7 @@ const Page: React.FC = () => {
             )}
 
             {isDesktop && (
-                <div className="w-full flex-1 p-4 flex items-center justify-center bg-gray-50">
+                <div className="w-full flex-1 p-4 flex items-center justify-center">
                     {renderContent()}
                 </div>
             )}
