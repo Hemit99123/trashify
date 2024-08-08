@@ -2,6 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS
 import { LatLngExpression, icon } from 'leaflet'; // Import LatLngExpression and icon
+import withFadeIn from '@/app/wrapper/withFadeIn';
 
 const Fourth: React.FC = () => {
     const position: LatLngExpression = [53.54992, 10.00678]; // Leaflet expects [lat, lng]
@@ -48,4 +49,4 @@ const Fourth: React.FC = () => {
     );
 };
 
-export default Fourth;
+export default withFadeIn(Fourth);
