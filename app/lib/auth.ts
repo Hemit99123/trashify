@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
 import { getSession } from "next-auth/react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const authenticate = async () => {
   const session = await getServerSession(options);
@@ -15,14 +16,14 @@ export const authenticate = async () => {
 };
 
 
-export const authenticateClient = async () => {
+  export const authenticateClient = async (router: AppRouterInstance) => {
 
-  const session = await getSession();
+    const session = await getSession();
 
-  if (!session) {
-    window.location.href = '/signin'
-  }
+    if (!session) {
+      router.replace('/signin')
+    }
 
-  return session;
-};
+    return session;
+  };
 

@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticate } from "../../lib/auth";
+import { PrismaClient } from "@prisma/client";
 
-export const GET = async (req: NextRequest) => {
+const prisma = new PrismaClient()
+
+export const POST = async (req: NextRequest) => {
   try {
     await authenticate();
-    return NextResponse.json({ message: 'top secret msg' });
+    
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }

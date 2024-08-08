@@ -1,20 +1,31 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        'alert-red': '#c13515', // Main alert color
+        'alert-red-light': '#fff8f6', // Light variant of alert-red
+      },
+      fontSize: {
+        'xxs': '0.6rem',
+        'xs': '0.70rem',  // Slightly smaller than the default
+        'sm': '0.80rem', // Slightly smaller than the default
+        'base': '0.9375rem', // Slightly smaller than the default
+        'lg': '1.0625rem',    // Slightly smaller than the default
+        'xl': '1.1875rem', // Slightly smaller than the default
+        '2xl': '1.3125rem', // Slightly smaller than the default
+        '3xl': '1.4375rem',  // Slightly smaller than the default
+        '4xl': '1.5625rem', // Slightly smaller than the default
+        '5xl': '1.6875rem',    // Slightly smaller than the default
+        '6xl': '1.8125rem', // Slightly smaller than the default
+        '7xl': '2.2rem',  // Slightly smaller than the default
       },
     },
   },
-  plugins: [],
-};
-export default config;
+  plugins: [
+    require('@tailwindcss/aspect-ratio'),
+  ],
+}

@@ -1,11 +1,15 @@
+
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import './globals.css'
+import Header from "./components/Header";
+import { AuthProvider } from "./lib/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "trashify",
-  description: "find trash bins near you :)",
+  title: "Trashify",
+  description: "Find bins near you to disgrad your trash!",
 };
 
 export default function RootLayout({
@@ -14,11 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-        <head>
-        <script src="https://cdn.tailwindcss.com"></script>
-        </head>
-        <body className={inter.className}>{children}</body>
-    </html>
+      <html lang="en">
+        <AuthProvider>          
+          <body className={inter.className}>
+            <Header />
+            {children}
+          </body>
+          </AuthProvider>
+
+      </html>
   );
 }

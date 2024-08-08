@@ -29,7 +29,7 @@ const page = () => {
                       className="w-12 rounded-full"
                     />
                     <h2 className="mb-8 text-2xl text-cyan-900 font-bold">
-                      log into trashify
+                      Log into Trashify
                     </h2>
                   </div>
                   <div className="mt-10 grid space-y-4">
@@ -41,7 +41,7 @@ const page = () => {
                           alt="google logo"
                         />
                         <span className="block w-max font-semibold tracking-wide text-gray-700 text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
-                          continue with google
+                          Continue with Google
                         </span>
                       </div>
                     </button>
