@@ -3,7 +3,11 @@ import LightBulb from '../../assets/regular/light-bulb.svg'
 import Alert from '../../assets/regular/alert.svg'
 import { useRouter } from 'next/navigation';
 
-const TitleScreen = () => {
+interface TitleScreenProps {
+    isDesktop: boolean
+}
+
+const TitleScreen: React.FC<TitleScreenProps> = ({isDesktop}) => {
   const [inputValue, setInputValue] = useState('test');
   const router = useRouter()
 
@@ -32,9 +36,12 @@ const TitleScreen = () => {
         onChange={handleChange}
       />
 
-      <button className='absolute bottom-16 bg-yellow-100 rounded-full py-3 px-3 w-10 h-10' onClick={handleNavigateToResource}>
-        <LightBulb />
-      </button>
+      {isDesktop &&
+        <button className='absolute bottom-16 bg-yellow-100 rounded-full py-3 px-3 w-10 h-10' onClick={handleNavigateToResource}>
+          <LightBulb />
+        </button>
+      }
+
     </div>
   );
 };
