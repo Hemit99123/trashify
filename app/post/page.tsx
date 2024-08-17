@@ -1,63 +1,79 @@
-  "use client";
+'use client';
 
-  import React, { useState } from 'react'
-  import First from '../components/post-screens/First'
-  import Second from '../components/post-screens/Second'
-  import Fourth from '../components/post-screens/Fourth'
-  import { useRouter } from 'next/navigation';
-  import Third from '../components/post-screens/Third';
-  import Sixth from '../components/post-screens/Sixth';
-  import Fifth from '../components/post-screens/Fifth';
+import React, { useState } from 'react';
+import First from '../../components/post-screens/First';
+import Second from '../../components/post-screens/Second';
+import Third from '../../components/post-screens/Third';
+import Fourth from '../../components/post-screens/Fourth';
+import Fifth from '../../components/post-screens/Fifth';
+import Sixth from '../../components/post-screens/Sixth';
+import { useRouter } from 'next/navigation';
+import { PostDataContext } from '../../contexts/PostDataContext';
+import StateObjProps from '../../types/poststate';
+import { handleCreatePost } from '../../lib/createPost';
+import withAuth from '@/hoc/withAuth';
 
-  const Page = () => {
+const Page = () => {
+  const screens = [<First />, <Second />, <Third />, <Fourth />, <Fifth />, <Sixth />];
+  const router = useRouter();
+  const [currentScreen, setCurrentScreen] = useState<number>(0);
+  const [state, setState] = useState<StateObjProps>({});
 
-    const screens = [<First />, <Second />, <Third />, <Fourth />, <Fifth />, <Sixth />,  ] 
-    const router = useRouter()
-    const [currentScreen, setCurrentScreen] = useState<number | null>(0);
+  const handleNext = () => {
+    if (currentScreen < screens.length - 1) {
+      setCurrentScreen(currentScreen + 1);
+    }
+  };
 
+  const handleBack = () => {
+    if (currentScreen > 0) {
+      setCurrentScreen(currentScreen - 1);
+    }
+  };
 
-    const handleNext = () => {
-      if (currentScreen !== null && currentScreen < screens.length - 1) {
-        setCurrentScreen(currentScreen + 1);
+  const handleNavigationToHome = () => {
+    router.push('/');
+  };
+
+  const isLastScreen = currentScreen === screens.length - 1;
+  const handleClick = isLastScreen 
+  ? async () => {
+      if (state.photo && state.title && state.bin && state.coordinates) {
+        try {
+          await handleCreatePost(state.title, state.photo, state.bin, state.coordinates);
+          alert('Post created successfully!');
+        } catch (error) {
+          alert('Failed to create post.');
+        }
+      } else {
+        alert('Please fill out all fields before submitting.');
       }
     }
-    
-    const handleBack = () => {
-      if (currentScreen !== null) {
-        setCurrentScreen(currentScreen - 1);
-      }
-    }
+  : handleNext;
 
-    const handlePost = () => {
-        alert('POSTED!!!')
-    }
-    
-    const handleNavigationToHome = () => {
-      router.push('/');
-    }
-
-    const isLastScreen = currentScreen === screens.length - 1;
-    const buttonText = isLastScreen ? "Post" : "Next";
-    const handleClick = isLastScreen ? handlePost : handleNext;
-    
-    
-    return (
+  return (
+    <PostDataContext.Provider value={{ state, setState }}>
       <div>
         <div className='flex justify-center mt-10 md:mt-[20vh] xl:mt-[10vh]'>
-          {currentScreen !== null && screens[currentScreen]}
+          {screens[currentScreen]}
         </div>
         <div className='absolute bottom-2 left-0 right-0 flex justify-between px-4 py-2'>
-          <button className='text-sm underline ml-5' onClick={currentScreen === 0 ? handleNavigationToHome : handleBack}>Back</button>
-          <button 
-            className='bg-black text-white px-7 rounded-lg py-2.5 text-sm mr-5' 
+          <button
+            className='text-sm underline ml-5'
+            onClick={currentScreen === 0 ? handleNavigationToHome : handleBack}
+          >
+            Back
+          </button>
+          <button
+            className='bg-black text-white px-7 rounded-lg py-2.5 text-sm mr-5'
             onClick={handleClick}
           >
-            {buttonText}
+            {isLastScreen ? "Post" : "Next"}
           </button>
         </div>
       </div>
-    )
-    
-  }
+    </PostDataContext.Provider>
+  );
+};
 
-  export default Page
+export default withAuth(Page);

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import './globals.css';
-import HeaderLayout from "./wrapper/HeaderLayout"; // Import the new client component
-import { AuthProvider } from "./lib/Providers";
+import {UserProvider} from '@auth0/nextjs-auth0/client'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,13 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-      <body className={inter.className}>
-        <HeaderLayout> {/* Render the client component */}
-          {children}
-        </HeaderLayout>
-      </body>
-      </AuthProvider>
+        <UserProvider>
+        <body className={inter.className}>
+            {children}
+        </body>
+        </UserProvider>
 
     </html>
   );

@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import ActionButton from '../components/ActionButton';
-import Plus from '../assets/regular/plus.svg'
-import Search from '../assets/regular/search-2.svg'
+import ActionButton from '@/components/ActionButton';
+import Plus from '@/assets/regular/plus.svg'
+import Search from '@/assets/regular/search-2.svg'
 import {useRouter} from 'next/navigation'
-import ManageModal from '../components/ManageModal';
+import ManageModal from '@/components/ManageModal';
+import withAuth from '@/hoc/withAuth';
 
 const Page = () => {
 
@@ -82,4 +83,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default withAuth(Page);
