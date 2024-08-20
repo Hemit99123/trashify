@@ -1,17 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import First from '../../components/post-screens/First';
-import Second from '../../components/post-screens/Second';
-import Third from '../../components/post-screens/Third';
-import Fourth from '../../components/post-screens/Fourth';
-import Fifth from '../../components/post-screens/Fifth';
-import Sixth from '../../components/post-screens/Sixth';
+import First from '@/components/post-screens/First';
+import Second from '@/components/post-screens/Second';
+import Third from '@/components/post-screens/Third';
+import Fourth from '@/components/post-screens/Fourth';
+import Fifth from '@/components/post-screens/Fifth';
+import Sixth from '@/components/post-screens/Sixth';
 import { useRouter } from 'next/navigation';
-import { PostDataContext } from '../../contexts/PostDataContext';
-import StateObjProps from '../../types/poststate';
-import { handleCreatePost } from '../../lib/createPost';
-import withAuth from '@/hoc/withAuth';
+import { PostDataContext } from '@/contexts/PostDataContext';
+import StateObjProps from '@/types/poststate';
 
 const Page = () => {
   const screens = [<First />, <Second />, <Third />, <Fourth />, <Fifth />, <Sixth />];
@@ -40,7 +38,6 @@ const Page = () => {
   ? async () => {
       if (state.photo && state.title && state.bin && state.coordinates) {
         try {
-          await handleCreatePost(state.title, state.photo, state.bin, state.coordinates);
           alert('Post created successfully!');
         } catch (error) {
           alert('Failed to create post.');
@@ -76,4 +73,4 @@ const Page = () => {
   );
 };
 
-export default withAuth(Page);
+export default Page;

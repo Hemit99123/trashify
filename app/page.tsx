@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import ShareModal from '@/components/ShareModal';
 import Share from '@/assets/regular/share.svg';
 import Search from '@/assets/regular/search-1.svg'
-import withAuth from '@/hoc/withAuth'
 
 const HomeView = () => {
   
@@ -76,4 +75,4 @@ const HomeView = () => {
   );
 }
 
-export default withAuth(HomeView);
+export default HomeView;

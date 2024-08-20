@@ -10,7 +10,6 @@ import PhotosScreen from '../../../components/update-screens/PhotosScreen';
 import BinTypeScreen from '../../../components/update-screens/BinTypesScreen';
 import TitleScreen from '../../../components/update-screens/TitleScreen';
 import LocationScreen from '../../../components/update-screens/LocationScreen';
-import withAuth from '@/hoc/withAuth';
 
 // Default icon configuration to prevent issues with missing icon images
 const defaultIcon = new L.Icon({
@@ -171,4 +170,4 @@ const Page: React.FC = () => {
     );
 };
 
-export default withAuth(Page);
+export default Page;

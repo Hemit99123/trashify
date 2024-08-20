@@ -6,7 +6,6 @@ import Plus from '@/assets/regular/plus.svg'
 import Search from '@/assets/regular/search-2.svg'
 import {useRouter} from 'next/navigation'
 import ManageModal from '@/components/ManageModal';
-import withAuth from '@/hoc/withAuth';
 
 const Page = () => {
 
@@ -83,4 +82,4 @@ const Page = () => {
   );
 };
 
-export default withAuth(Page);
+export default Page;
