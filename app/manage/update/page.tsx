@@ -6,10 +6,10 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-import PhotosScreen from '../../components/update-screens/PhotosScreen';
-import BinTypeScreen from '../../components/update-screens/BinTypesScreen';
-import TitleScreen from '../../components/update-screens/TitleScreen';
-import LocationScreen from '../../components/update-screens/LocationScreen';
+import PhotosScreen from '../../../components/update-screens/PhotosScreen';
+import BinTypeScreen from '../../../components/update-screens/BinTypesScreen';
+import TitleScreen from '../../../components/update-screens/TitleScreen';
+import LocationScreen from '../../../components/update-screens/LocationScreen';
 
 // Default icon configuration to prevent issues with missing icon images
 const defaultIcon = new L.Icon({

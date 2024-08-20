@@ -1,18 +1,11 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import ShareModal from './components/ShareModal';
-import Share from './assets/regular/share.svg';
-import { authenticateClient } from './lib/auth';
-import Search from './assets/regular/search-1.svg'
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import ShareModal from '@/components/ShareModal';
+import Share from '@/assets/regular/share.svg';
+import Search from '@/assets/regular/search-1.svg'
 
 const HomeView = () => {
-
-  const router = useRouter();
   
-  useEffect(() => {
-    authenticateClient(router);
-  }, []);
 
   const [showShareModal, setShowShareModal] = useState(false);
   const [email, setEmail] = useState('')
