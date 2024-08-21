@@ -6,19 +6,14 @@ import withFadeIn from '@/wrapper/withFadeIn';
 import { PostDataContext } from '@/contexts/PostDataContext';
 
 const Fourth = () => {
-    const {state} = useContext(PostDataContext)
-    const coordinatesString = state.coordinates || '';
+    const { state } = useContext(PostDataContext);
 
-    // Split the string by comma
-    const [latString, lngString] = coordinatesString.split(',');
-
-    // Convert strings to numbers
-    const lat = parseFloat(latString);
-    const lng = parseFloat(lngString);
+    // Convert strings to numbers, fallback to 0 if undefined
+    const lat = parseFloat(state.latitude || '0');
+    const lng = parseFloat(state.longtitude || '0');
 
     // Create the position object
     const position: LatLngExpression = [lat, lng]; // Leaflet expects [lat, lng]
-
 
     // Function to determine container style based on screen width
     const getContainerStyle = () => {
@@ -45,7 +40,9 @@ const Fourth = () => {
     return (
         <div>
             <h1 className='font-medium text-5xl'>Is the pin in the right spot?</h1>
-            <p className='text-gray-400 text-base font-light'>This is just to ensure that your location is correct. Hit back if you need to change anything at all!</p>
+            <p className='text-gray-400 text-base font-light'>
+                This is just to ensure that your location is correct. Hit back if you need to change anything at all!
+            </p>
             <div style={getContainerStyle()}>
                 <MapContainer 
                     center={position} 

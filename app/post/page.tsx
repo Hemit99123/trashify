@@ -10,13 +10,21 @@ import Sixth from '@/components/post-screens/Sixth';
 import { useRouter } from 'next/navigation';
 import { PostDataContext } from '@/contexts/PostDataContext';
 import StateObjProps from '@/types/poststate';
+import axios from 'axios'
 
 const Page = () => {
   const screens = [<First />, <Second />, <Third />, <Fourth />, <Fifth />, <Sixth />];
   const router = useRouter();
   const [currentScreen, setCurrentScreen] = useState<number>(0);
-  const [state, setState] = useState<StateObjProps>({});
-
+  const [state, setState] = useState<StateObjProps>({
+    photo: undefined,
+    title: undefined,
+    bin: undefined,
+    longtitude: undefined,
+    latitude: undefined,
+    city: undefined
+  });
+  
   const handleNext = () => {
     if (currentScreen < screens.length - 1) {
       setCurrentScreen(currentScreen + 1);
@@ -36,8 +44,15 @@ const Page = () => {
   const isLastScreen = currentScreen === screens.length - 1;
   const handleClick = isLastScreen 
   ? async () => {
-      if (state.photo && state.title && state.bin && state.coordinates) {
+      if (state.photo && state.title && state.bin && state.longtitude && state.latitude && state.city) {
         try {
+          await axios.post('/api/post', {
+            bin: state.bin,
+            photo: state.photo,
+            title: state.title,
+            longtitude: state.longtitude,
+            city: state.city
+          })
           alert('Post created successfully!');
         } catch (error) {
           alert('Failed to create post.');

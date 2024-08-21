@@ -2,31 +2,52 @@ import React, { useContext, useState } from 'react';
 import Image from 'next/image';
 import withFadeIn from '@/wrapper/withFadeIn'; // Adjust the import path as needed
 import { PostDataContext } from '@/contexts/PostDataContext';
+import imageCompression from 'browser-image-compression';
+
+const FIFTH_MAX_FILE_SIZE_MB = 10; // Maximum file size in MB
 
 const Fifth = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { setState } = useContext(PostDataContext);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
+      // Check if the file size exceeds the limit
+      if (file.size / (1024 * 1024) > FIFTH_MAX_FILE_SIZE_MB) {
+        alert(`File size exceeds ${FIFTH_MAX_FILE_SIZE_MB} MB. Please choose a smaller file.`);
+        return; // Exit the function if the file is too large
+      }
 
-      reader.onloadend = () => {
-        // Convert the file to a base64-encoded string
-        if (typeof reader.result === 'string') {
-          setSelectedImage(reader.result);
+      try {
+        // Define options for image compression
+        const options = {
+          maxSizeMB: 1, // Maximum file size in MB after compression
+          maxWidthOrHeight: 1024, // Maximum width or height
+          useWebWorker: true,
+        };
 
-          // Update the context with the base64 string
-          setState(prevState => ({
-            ...prevState,
-            photo: reader.result // Update the context with base64 data
-          }));
-        }
-      };
+        // Compress the image
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
 
-      // Read the file as a Data URL (base64-encoded string)
-      reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') {
+            setSelectedImage(reader.result);
+
+            // Update the context with the base64 string
+            setState(prevState => ({
+              ...prevState,
+              photo: reader.result // Update the context with base64 data
+            }));
+          }
+        };
+
+        // Read the compressed file as a Data URL (base64-encoded string)
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Image compression failed:', error);
+      }
     }
   };
 

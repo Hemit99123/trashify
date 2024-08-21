@@ -9,10 +9,8 @@ const Sixth = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setState(prevState => ({
-      bin: prevState?.bin,
+      ...prevState,
       title: event.target.value, 
-      coordinates: prevState?.coordinates,  
-      photo: prevState?.photo
     }));  
   };
 

@@ -1,8 +1,11 @@
+// Example adjustment for StateObjProps
 interface StateObjProps {
-    title?: string;
     bin?: "garbage" | "recycling" | "compost";
-    coordinates?: string;
+    title?: string;
+    latitude?: string; // Change to string if you want to store it as a string
+    longtitude?: string; // Change to string if you want to store it as a string
     photo?: string | ArrayBuffer | null;
-}
+    city: string | undefined;
+  }
 
 export default StateObjProps

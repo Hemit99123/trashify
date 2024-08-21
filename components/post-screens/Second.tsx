@@ -11,11 +11,8 @@ const Second = () => {
 
   const handleOptionClick = (binType: 'garbage' | 'recycling' | 'compost') => {
     setState(prevState => ({
+      ...prevState,
       bin: binType,  // Update the bin type
-      // Retain previous states
-      title: prevState?.title, 
-      coordinates: prevState?.coordinates,  
-      photo: prevState?.photo
     }));
   };
 

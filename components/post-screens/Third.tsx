@@ -1,25 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react';
-import ToggleModal from './components/ToggleModal';
 import withFadeIn from '@/wrapper/withFadeIn'; 
 import { PostDataContext } from '@/contexts/PostDataContext';
+import axios from 'axios';
 
 const Third = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  const {state, setState} = useContext(PostDataContext)
+  const { state, setState } = useContext(PostDataContext);
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
 
-  const handleSuccess = (result: GeolocationPosition) => {
+  const handleSuccess = async (result: GeolocationPosition) => {
     // Extract latitude and longitude from the result
     const { latitude, longitude } = result.coords;
+    let city = '';
+    let latitudeString = latitude.toString()
+    let longitudeString = longitude.toString()
 
+    // Get the city that the coordinates is based out off (mircoservice!) using the OpenCageData demo 
+    await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${latitudeString},+${longitudeString}&key=2a392102c3064284a53cd04b451ff785&language=en&pretty=1`)
+      .then(result => {
+        city = result.data.results[0].components.city;
+      })
     setState(prevState => ({
-      bin: prevState?.bin,
-      title: prevState?.title, 
-      coordinates: `${latitude}, ${longitude}`,  
-      photo: prevState?.photo
+      ...prevState,
+      latitude: latitudeString,
+      longtitude: longitudeString,
+      city
     })); 
   };
 
@@ -31,7 +35,7 @@ const Third = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
     } else {
-      alert("Geolocation is not supported by this browser. This means you must manually type your coordinates :*(");
+      alert("Geolocation is not supported by this browser, meaning this app is not supported!");
     }
   };
 
@@ -39,7 +43,7 @@ const Third = () => {
     getLocation();
   }, []);
 
-  const coordinates = state.coordinates || ''
+  const coordinates = `${state.latitude || ''}, ${state.longtitude || ''}`;
 
   return (
     <div>
@@ -59,37 +63,8 @@ const Third = () => {
           <div className="flex-grow border-t border-gray-400"></div>
           <p className='text-xs text-gray-400 mt-px'>Postal Code</p>
           <p className='text-base'>L6P2RX</p>
-        </div>
-        <div className="flex-grow border-t border-gray-300 my-6"></div>
-        <div className='flex items-center justify-between'>
-          <div className='flex-col'>
-            <p className='text-sm font-medium'>Want to change it?</p>
-            <p className='text-xs text-gray-400 font-light'>If the current location is not correct, press the button to customize it!</p>
-          </div>
-          <label className='flex cursor-pointer select-none items-center'>
-            <div className='relative'>
-              <input
-                type='checkbox'
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-                className='sr-only'
-              />
-              <div
-                className={`box block h-8 w-14 rounded-full ${isChecked ? 'bg-green-500' : 'bg-black'}`}
-              ></div>
-              <div
-                className={`absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white transition-transform duration-300 ${
-                  isChecked ? 'translate-x-full' : ''
-                }`}
-              ></div>
-            </div>
-          </label>
-        </div>
+        </div>        
       </div>
-
-      {isChecked &&
-        <ToggleModal setShowToggleModal={setIsChecked} />
-      }
     </div>
   );
 }
