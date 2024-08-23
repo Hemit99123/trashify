@@ -1,14 +1,28 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ShareModal from '@/components/ShareModal';
 import Share from '@/assets/regular/share.svg';
 import Search from '@/assets/regular/search-1.svg'
+import axios from 'axios';
+import {ItemsProp} from '@/types/poststate';
 
 const HomeView = () => {
   
 
   const [showShareModal, setShowShareModal] = useState(false);
+  const [post, setPost] = useState([])
   const [email, setEmail] = useState('')
+
+  useEffect(() => {
+    const handleGetPost = async () => {
+      await axios.get("/api/post")
+        .then((result) => {
+          setPost(result.data.data)
+        })
+    }
+
+    handleGetPost()
+  }, [])
 
   const toggleShareModalState = () => {
     setShowShareModal((prev) => !prev);
@@ -41,13 +55,13 @@ const HomeView = () => {
       <hr className="w-full h-px my-5 bg-gray-300" />
       <div className='container mx-auto px-4 lg:px-16'>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-4 lg:gap-6 mt-4'>
-          {[...Array(12)].map((_, index) => (
+          {post.map((item: ItemsProp, index) => (
             <div key={index} className='relative flex flex-col'>
               <div>
                 <div className='relative w-full aspect-w-16 md:aspect-w-14 aspect-h-12'>
                   <img
-                    className='w-full h-full object-cover rounded-lg'
-                    src='https://loremflickr.com/cache/resized/65535_53060242254_5101d67715_500_150_nofilter.jpg'
+                      className='w-full h-full object-cover rounded-lg'
+                      src={item.photo}
                     alt='Main image'
                   />
                 </div>
@@ -59,9 +73,9 @@ const HomeView = () => {
                 </button>
               </div>
               <div className='mt-2'>
-                <p className="text-xs font-medium">Join a living room session with Doja</p>
-                <p className='text-gray-500 text-xs font-light'>Posted by Doja Cat</p>
-                <p className='text-xs font-medium'>On January 2024</p>
+                <p className="text-xs font-medium">{item.title}</p>
+                <p className='text-gray-500 text-xs font-light'>{item.bin} bin</p>
+                <p className='text-xs font-medium'>Posted by {item.userId}</p>
               </div>
             </div>
           ))}

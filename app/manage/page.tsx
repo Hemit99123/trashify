@@ -1,83 +1,90 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ActionButton from '@/components/ActionButton';
-import Plus from '@/assets/regular/plus.svg'
-import Search from '@/assets/regular/search-2.svg'
-import {useRouter} from 'next/navigation'
+import Plus from '@/assets/regular/plus.svg';
+import Search from '@/assets/regular/search-2.svg';
+import { useRouter } from 'next/navigation';
 import ManageModal from '@/components/ManageModal';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import axios from 'axios';
+import { ItemsProp } from '@/types/poststate';
 
 const Page = () => {
+  const [showManageModal, setShowManageModal] = useState(false);
+  const [post, setPost] = useState<ItemsProp[]>([]);
+  const { user } = useUser();
+  const router = useRouter();
 
-    const [showManageModal, setShowManageModel] = useState(false)
+  useEffect(() => {
+    const handleGetPost = async () => {
+      try {
+        const result = await axios.get(`/api/post/user?email=${user?.email}`);
+        setPost(result.data.data);
+      } catch (error) {
+        console.error("Error fetching posts", error);
+      }
+    };
 
-    const toggleManageModelState = () => {
-        setShowManageModel((prev) => !prev)
+    if (user?.email) {
+      handleGetPost();
     }
+  }, [user?.email]);
 
-    const router = useRouter();
+  const toggleManageModalState = () => {
+    setShowManageModal((prev) => !prev);
+  };
 
-    const handleNavigateToPost = () => {
-        router.push('/post')
-    }
+  const handleNavigateToPost = () => {
+    router.push('/post');
+  };
 
+  const handleSearch = () => {
+    alert("YOU SEARCHED!!");
+  };
 
-    const handleSearch = () => {
-        alert("YOU SEARCHED!!")
-    }
   return (
     <div>
       <h1 className='text-4xl font-medium pl-8 pt-10'>My Bins</h1>
-    
+
       <div className='flex top-28 right-10 absolute space-x-2'>
-            <ActionButton SVG={Search}  action={handleSearch}/>
-            <ActionButton SVG={Plus} action={handleNavigateToPost}/>
+        <ActionButton SVG={Search} action={handleSearch} />
+        <ActionButton SVG={Plus} action={handleNavigateToPost} />
       </div>
+
       <div className='mt-7 p-4 pl-8'>
         <table className='max-w-screen-2xl w-full text-xs'>
-            <thead>
+          <thead>
             <tr>
-                <th className='pb-4 px-2 text-left'>Name</th>
-                <th className='pb-4 px-2 text-left'>Location</th>
-                <th className='pb-4 px-2 text-left'>Type</th>
+              <th className='pb-4 px-2 text-left'>Name</th>
+              <th className='pb-4 px-2 text-left'>Location</th>
+              <th className='pb-4 px-2 text-left'>Type</th>
             </tr>
-            </thead>
-            <tbody>
-            <tr className='hover:bg-special-grey cursor-pointer' onClick={toggleManageModelState}>
+          </thead>
+          <tbody>
+            {post.map((item: ItemsProp, index) => (
+              <tr
+                key={index}
+                className='hover:bg-special-grey cursor-pointer'
+                onClick={toggleManageModalState}
+              >
                 <td className='py-4 px-2 flex items-center'>
-                <img
-                    src='https://loremflickr.com/cache/resized/65535_53060242254_5101d67715_500_150_nofilter.jpg'
+                  <img
+                    src={item.photo}
                     className='w-12 h-12 object-cover rounded-sm'
                     alt='Profile'
-                />
-                <p className='ml-7 font-medium'>Test</p>
+                  />
+                  <p className='ml-7 font-medium'>{item.title}</p>
                 </td>
-                <td className='py-4 px-2 text-gray-500'>Brampton</td>
-                <td className='py-4 px-2 text-gray-500'>Compost</td>
-            </tr>
-
-            <tr className='hover:bg-special-grey cursor-pointer' onClick={toggleManageModelState}>
-                <td className='py-4 px-2 flex items-center'>
-                <img
-                    src='https://loremflickr.com/cache/resized/65535_53060242254_5101d67715_500_150_nofilter.jpg'
-                    className='w-12 h-12 object-cover rounded-sm'
-                    alt='Profile'
-                />
-                <p className='ml-7 font-medium'>Test</p>
-                </td>
-                <td className='py-4 px-2 text-gray-500'>Brampton</td>
-                <td className='py-4 px-2 text-gray-500'>Recycling</td>
-            </tr>
-            
-            
-            </tbody>
+                <td className='py-4 px-2 text-gray-500'>{item.city}</td>    
+                <td className='py-4 px-2 text-gray-500'>{item.bin}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
 
-      {showManageModal &&
-          <ManageModal setShowManageModal={setShowManageModel} />
-      }
-
+      {showManageModal && <ManageModal setShowManageModal={setShowManageModal} />}
     </div>
   );
 };

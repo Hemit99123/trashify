@@ -1,10 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"
-import { PrismaClient } from "@prisma/client"
+import {prisma} from '@/utils/prisma'
 
-const prisma = new PrismaClient;
-
-
-// Using the python mircoservice through RPC, we can use AI within our app!
+// Using the python mircoservice through RPC, we can use AI within our app! (gRPC framework from Google.com!)
 
 export const GET = async (req: NextRequest) => {    
     try {

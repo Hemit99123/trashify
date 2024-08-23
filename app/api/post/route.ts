@@ -1,10 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import {prisma} from '@/utils/prisma';
 import { getSession } from "@auth0/nextjs-auth0";
 import { S3Client, CreateMultipartUploadCommand, UploadPartCommand, CompleteMultipartUploadCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
+import { helperCacheFunctionCity } from "@/utils/memcached";
 
-const prisma = new PrismaClient();
+
 
 const s3 = new S3Client({
   region: 'us-east-1',
@@ -16,9 +17,16 @@ const s3 = new S3Client({
 
 const BUCKET_NAME = 'mydemobucket121212';
 
-export const GET = async (req: NextRequest) => {
+export const GET = async (req: NextRequest) => {  
   try {
-    const data = await prisma.post.findMany();
+    let city = await helperCacheFunctionCity()
+
+    const data = await prisma.post.findMany({
+      where: {
+        city
+      }
+    });
+
     return NextResponse.json({ success: true, data }, { status: 200 });
   } catch (err: any) {
     console.error("Error fetching posts:", err);
@@ -30,7 +38,8 @@ export const POST = async (req: NextRequest) => {
   try {
     const session = await getSession();
     const body = await req.json();
-    const { bin, photo, title, longitude, latitude, city } = body;
+    const { bin, photo, title, longitude, latitude } = body;
+    let city = await helperCacheFunctionCity()
 
     // Generate a unique filename
     const fileName = `${randomUUID()}.jpg`;

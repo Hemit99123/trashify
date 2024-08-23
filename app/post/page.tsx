@@ -9,7 +9,7 @@ import Fifth from '@/components/post-screens/Fifth';
 import Sixth from '@/components/post-screens/Sixth';
 import { useRouter } from 'next/navigation';
 import { PostDataContext } from '@/contexts/PostDataContext';
-import StateObjProps from '@/types/poststate';
+import {StateObjProps} from '@/types/poststate';
 import axios from 'axios'
 
 const Page = () => {
@@ -22,7 +22,6 @@ const Page = () => {
     bin: undefined,
     longtitude: undefined,
     latitude: undefined,
-    city: undefined
   });
   
   const handleNext = () => {
@@ -44,14 +43,13 @@ const Page = () => {
   const isLastScreen = currentScreen === screens.length - 1;
   const handleClick = isLastScreen 
   ? async () => {
-      if (state.photo && state.title && state.bin && state.longtitude && state.latitude && state.city) {
+      if (state.photo && state.title && state.bin && state.longtitude && state.latitude) {
         try {
           await axios.post('/api/post', {
             bin: state.bin,
             photo: state.photo,
             title: state.title,
             longtitude: state.longtitude,
-            city: state.city
           })
           alert('Post created successfully!');
         } catch (error) {
