@@ -18,6 +18,7 @@ const ManageModal: React.FC<ShareModalProps> = ({ setShowManageModal, id }) => {
           id
         }
       })
+      alert("Deleted your post")
     } catch(err) {
       alert('There was an error!')
     }

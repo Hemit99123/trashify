@@ -5,7 +5,6 @@ import ActionButton from '@/components/ActionButton';
 import Plus from '@/assets/regular/plus.svg';
 import Search from '@/assets/regular/search-2.svg';
 import { useRouter } from 'next/navigation';
-import ManageModal from '@/components/ManageModal';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import axios from 'axios';
 import { ItemsProp } from '@/types/poststate';
@@ -36,8 +35,13 @@ const Page = () => {
     router.push('/post');
   };
 
-  const handleSearch = () => {
-    alert("YOU SEARCHED!!");
+  const handleSearch = async () => {
+    const query = prompt('What is your search term?')
+
+    await axios.get(`/api/post/search?query=${query}`)
+      .then((result) => {
+        setPost(result.data.data)
+      })
   };
 
   return (

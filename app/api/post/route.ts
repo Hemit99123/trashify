@@ -36,10 +36,10 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   try {
+    const city = await helperCacheFunctionCity()
     const session = await getSession();
     const body = await req.json();
     const { bin, photo, title, longitude, latitude } = body;
-    let city = await helperCacheFunctionCity()
 
     // Generate a unique filename
     const fileName = `${randomUUID()}.jpg`;
