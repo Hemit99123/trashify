@@ -1,8 +1,8 @@
 import React from 'react'
 import withFadeIn from '@/wrapper/withFadeIn'
-import Recycle from '@/app/assets/type-option-icon/recycle-edit.svg'
-import Garbage from '@/app/assets/type-option-icon/garbage-edit.svg'
-import Food from '@/app/assets/type-option-icon/food-edit.svg'
+import Recycle from '@/assets/type-option-icon/recycle-edit.svg'
+import Garbage from '@/assets/type-option-icon/garbage-edit.svg'
+import Food from '@/assets/type-option-icon/food-edit.svg'
 
 interface MenuItemsProps {
     SVG: any;

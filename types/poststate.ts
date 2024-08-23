@@ -9,6 +9,8 @@ export interface StateObjProps {
 // Reusing the StateObjProps but changing it for my speific use case through the use of TypeScript transformers (OMIT)
 export interface ItemsProp extends Omit<StateObjProps, 'photo' /* Delete photo key */> {
   /* Add photo key back with new type */
+  id: string;
   photo: string;
   userId: string;
+  city: string;
 }

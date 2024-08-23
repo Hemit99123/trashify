@@ -114,3 +114,26 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 };
+
+export const DELETE = async (req: NextRequest) => {
+  try {
+    const body = await req.json()
+    const {id} = body
+
+    const session = await getSession();
+
+    // No need to double check if session is null due to the auth0 middleware logic!
+
+    await prisma.post.delete({
+      where: {
+        id,
+        userId: session?.user?.email
+      }
+    });
+
+    return NextResponse.json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return NextResponse.json({ success: false, message: "Post did not get deleted" });
+  }
+}

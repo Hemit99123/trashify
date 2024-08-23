@@ -9,9 +9,9 @@ import ManageModal from '@/components/ManageModal';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import axios from 'axios';
 import { ItemsProp } from '@/types/poststate';
+import DeleteItem from '@/components/DeleteItem';
 
 const Page = () => {
-  const [showManageModal, setShowManageModal] = useState(false);
   const [post, setPost] = useState<ItemsProp[]>([]);
   const { user } = useUser();
   const router = useRouter();
@@ -31,9 +31,6 @@ const Page = () => {
     }
   }, [user?.email]);
 
-  const toggleManageModalState = () => {
-    setShowManageModal((prev) => !prev);
-  };
 
   const handleNavigateToPost = () => {
     router.push('/post');
@@ -63,28 +60,12 @@ const Page = () => {
           </thead>
           <tbody>
             {post.map((item: ItemsProp, index) => (
-              <tr
-                key={index}
-                className='hover:bg-special-grey cursor-pointer'
-                onClick={toggleManageModalState}
-              >
-                <td className='py-4 px-2 flex items-center'>
-                  <img
-                    src={item.photo}
-                    className='w-12 h-12 object-cover rounded-sm'
-                    alt='Profile'
-                  />
-                  <p className='ml-7 font-medium'>{item.title}</p>
-                </td>
-                <td className='py-4 px-2 text-gray-500'>{item.city}</td>    
-                <td className='py-4 px-2 text-gray-500'>{item.bin}</td>
-              </tr>
+              <DeleteItem item={item} index={index} />
             ))}
           </tbody>
         </table>
       </div>
 
-      {showManageModal && <ManageModal setShowManageModal={setShowManageModal} />}
     </div>
   );
 };

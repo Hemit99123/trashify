@@ -1,5 +1,5 @@
 import React from 'react'
-import Pin from '@/app/assets/regular/pin.svg'
+import Pin from '@/assets/regular/pin.svg'
 
 interface CoorInputProps {
     label: string;
