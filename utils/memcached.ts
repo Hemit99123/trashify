@@ -29,6 +29,9 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
                    return result
                 }               
             })
+            .catch(() => {
+                return new Error("An error occured when caching for data") 
+            })
 
         // Fetch from API
         const ipResponse = await axios.get('https://api.ipify.org?format=json');
