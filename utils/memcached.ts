@@ -28,10 +28,6 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
                 return result
             })
 
-            .catch((error) => {
-                return error
-            })
-
         // Fetch from API
         const ipResponse = await axios.get('https://api.ipify.org?format=json');
         const ip = ipResponse.data.ip;
@@ -39,7 +35,7 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
         let city = geoResponse.data.city;
 
         // Cache the result
-        await new Promise<void>((resolve, reject) => {
+        const setCache = new Promise<void>((resolve, reject) => {
             memcached.set(`${email}:city`, city, CACHE_EXPIRES, (err) => {
                 if (err) {
                     console.error('Error adding to cache:', err);
@@ -49,6 +45,11 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
                 }
             });
         });
+
+        await setCatch
+              .catch(() => {
+                return throw new Error("Error in caching data") 
+              })
 
         return city;
     } catch (error) {
