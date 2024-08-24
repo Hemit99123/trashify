@@ -1,21 +1,18 @@
 import Memcached from 'memcached';
-import crypto from 'crypto';
-import axios from 'axios';
-import { cookies } from 'next/headers';
+    import axios from 'axios';
+import { getSession } from '@auth0/nextjs-auth0';
 
 const memcached = new Memcached('localhost:11211');
 const CACHE_EXPIRES = 60 * 60; // Cache expiration time in 3600 seconds (1 hour)
 
 export const helperCacheFunctionCity = async (): Promise<string> => {
-    const cookieStore = cookies();
-    const appSessionCookie = cookieStore.get('appSession');
-    const appSession = appSessionCookie && typeof appSessionCookie === 'string' ? appSessionCookie : "";
-    const accessTokenHash = crypto.createHash('sha256').update(appSession).digest('hex');
+    const session = await getSession()
+    const email = session?.user.email
 
     try {
         // Check cache
         const cachedData = await new Promise<string | null>((resolve, reject) => {
-            memcached.get(`${accessTokenHash}:city`, (err, data) => {
+            memcached.get(`${email}:city`, (err, data) => {
                 if (err) {
                     console.error('Error fetching from cache:', err);
                     reject(err);
@@ -37,7 +34,7 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
 
         // Cache the result
         await new Promise<void>((resolve, reject) => {
-            memcached.set(`${accessTokenHash}:city`, city, CACHE_EXPIRES, (err) => {
+            memcached.set(`${email}:city`, city, CACHE_EXPIRES, (err) => {
                 if (err) {
                     console.error('Error adding to cache:', err);
                     reject(new Error(`Failed to add cache: ${err.message}`));
