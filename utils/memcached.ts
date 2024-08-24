@@ -25,7 +25,9 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
 
         await cachedData
             .then((result) => {
-                return result
+                if (result) {
+                   return result
+                }               
             })
 
         // Fetch from API
