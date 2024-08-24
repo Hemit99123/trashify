@@ -6,12 +6,13 @@ const memcached = new Memcached('localhost:11211');
 const CACHE_EXPIRES = 60 * 60; // Cache expiration time in 3600 seconds (1 hour)
 
 export const helperCacheFunctionCity = async (): Promise<string> => {
+    let city = '';
     const session = await getSession()
     const email = session?.user.email
 
     try {
         // Check cache
-        const cachedData = await new Promise<string | null>((resolve, reject) => {
+        const cachedData = new Promise<string | null>((resolve, reject) => {
             memcached.get(`${email}:city`, (err, data) => {
                 if (err) {
                     console.error('Error fetching from cache:', err);
@@ -22,15 +23,20 @@ export const helperCacheFunctionCity = async (): Promise<string> => {
             });
         });
 
-        if (cachedData) {
-            return cachedData;
-        }
+        await cachedData
+            .then((result) => {
+                return result
+            })
+
+            .catch((error) => {
+                return error
+            })
 
         // Fetch from API
         const ipResponse = await axios.get('https://api.ipify.org?format=json');
         const ip = ipResponse.data.ip;
         const geoResponse = await axios.get(`http://api.ipstack.com/${ip}?access_key=${process.env.IPSTACK_API_KEY}`);
-        const city = geoResponse.data.city;
+        let city = geoResponse.data.city;
 
         // Cache the result
         await new Promise<void>((resolve, reject) => {
