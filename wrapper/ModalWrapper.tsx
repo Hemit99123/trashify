@@ -1,5 +1,5 @@
 import React from 'react';
-import Cancel from '../assets/regular/cancel.svg';
+import Cancel from '@/assets/regular/cancel.svg';
 
 interface ModalWrapperProps {
   children: React.ReactNode;

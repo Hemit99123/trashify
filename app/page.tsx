@@ -1,38 +1,60 @@
 "use client";
+
 import React, { useEffect, useState } from 'react';
 import ShareModal from '@/components/ShareModal';
 import Share from '@/assets/regular/share.svg';
-import Search from '@/assets/regular/search-1.svg'
+import Search from '@/assets/regular/search-1.svg';
 import axios from 'axios';
-import {ItemsProp} from '@/types/poststate';
+import { ItemsProp } from '@/types/poststate';
 
 const HomeView = () => {
-  
-
   const [showShareModal, setShowShareModal] = useState(false);
-  const [post, setPost] = useState([])
-  const [email, setEmail] = useState('')
+  const [post, setPost] = useState<ItemsProp[]>([]);
+  const [email, setEmail] = useState('');
+  const [lat, setLat] = useState<number | null>(null);
+  const [long, setLong] = useState<number | null>(null);
+
+  useEffect(() => {
+    const getCurrentPosition = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLat(position.coords.latitude);
+            setLong(position.coords.longitude);
+          },
+          (error) => {
+            console.error('Geolocation error:', error);
+          }
+        );
+      }
+    };
+
+    getCurrentPosition();
+  }, []);
 
   useEffect(() => {
     const handleGetPost = async () => {
-      await axios.get("/api/post")
-        .then((result) => {
-          setPost(result.data.data)
-        })
-    }
+      if (lat !== null && long !== null) {
+        try {
+          const result = await axios.get(`/api/post`,  { params: { lat, long } });
+          setPost(result.data.data);
+        } catch (error) {
+          console.error('Error fetching posts:', error);
+        }
+      }
+    };
 
-    handleGetPost()
-  }, [])
+    handleGetPost();
+  }, [lat, long]);
 
   const toggleShareModalState = () => {
     setShowShareModal((prev) => !prev);
   };
 
   const handleSearch = () => {
-    alert(`You have searched ${email}`)
-    setEmail('')
-  }
-
+    alert(`You have searched ${email}`);
+    setEmail('');
+  };
 
   return (
     <div className='flex flex-col items-center'>
@@ -60,8 +82,8 @@ const HomeView = () => {
               <div>
                 <div className='relative w-full aspect-w-16 md:aspect-w-14 aspect-h-12'>
                   <img
-                      className='w-full h-full object-cover rounded-lg'
-                      src={item.photo}
+                    className='w-full h-full object-cover rounded-lg'
+                    src={item.photo}
                     alt='Main image'
                   />
                 </div>
