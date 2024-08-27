@@ -16,4 +16,7 @@ model Post {
   title    String
   city     String
   coor     Json
+
+  // Implemented db indexing to avoid linear search when querying for data (scalable solution)
+  @@index([city, userId])
 }
