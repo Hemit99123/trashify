@@ -1,26 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react';
-import ToggleModal from './components/ToggleModal';
-import withFadeIn from '@/wrapper/withFadeIn'; 
-import { PostDataContext } from '@/contexts/PostDataContext';
+import React, { useEffect } from 'react';
+import withFadeIn from '@/wrapper/withFadeIn';
+import useCreateStore from '@/store/useCreateStore'; // Import Zustand store
 
 const Third = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  const {state, setState} = useContext(PostDataContext)
+  // Access Zustand store state and updater function
+  const { latitude, longitude, setLatitude, setLongitude } = useCreateStore((state) => ({
+    latitude: state.latitude,
+    longitude: state.longitude,
+    setLatitude: state.setLatitude,
+    setLongitude: state.setLongitude,
+  }));
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
-
-  const handleSuccess = (result: GeolocationPosition) => {
+  const handleSuccess = async (result: GeolocationPosition) => {
     // Extract latitude and longitude from the result
     const { latitude, longitude } = result.coords;
-
-    setState(prevState => ({
-      bin: prevState?.bin,
-      title: prevState?.title, 
-      coordinates: `${latitude}, ${longitude}`,  
-      photo: prevState?.photo
-    })); 
+    setLatitude(latitude.toString());
+    setLongitude(longitude.toString());
   };
 
   const handleError = (error: GeolocationPositionError) => {
@@ -31,7 +26,7 @@ const Third = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
     } else {
-      alert("Geolocation is not supported by this browser. This means you must manually type your coordinates :*(");
+      alert("Geolocation is not supported by this browser, meaning this app is not supported!");
     }
   };
 
@@ -39,57 +34,20 @@ const Third = () => {
     getLocation();
   }, []);
 
-  const coordinates = state.coordinates || ''
+  const coordinates = `${latitude || ''}, ${longitude || ''}`;
 
   return (
     <div>
-      <h1 className='font-medium text-5xl'>Confirm the location</h1>
-      <p className='text-gray-400 text-base font-light'>Please provide an accurate location. This way it is easy for those looking for a bin.</p>
+      <h1 className='font-medium text-5xl'>Your coordinates</h1>
+      <p className='text-gray-400 text-base font-light'>
+        These are the geospatial data that will be stored within our system. If you are not comfortable with that, please abort this process!
+      </p>
       <div className='mt-8'>
         <div className='rounded-lg border py-1 px-3'>
           <p className='text-xs text-gray-400'>Coordinates</p>
           <p className='text-base'>{coordinates ? coordinates : 'Fetching...'}</p>
         </div>
-        <div className='rounded-lg border py-1 px-3 mt-7'>
-          <p className='text-xs text-gray-400'>City</p>
-          <p className='text-base'>Brampton</p>
-          <div className="flex-grow border-t border-gray-400"></div>
-          <p className='text-xs text-gray-400 mt-px'>Province/Region</p>
-          <p className='text-base'>Ontario</p>
-          <div className="flex-grow border-t border-gray-400"></div>
-          <p className='text-xs text-gray-400 mt-px'>Postal Code</p>
-          <p className='text-base'>L6P2RX</p>
-        </div>
-        <div className="flex-grow border-t border-gray-300 my-6"></div>
-        <div className='flex items-center justify-between'>
-          <div className='flex-col'>
-            <p className='text-sm font-medium'>Want to change it?</p>
-            <p className='text-xs text-gray-400 font-light'>If the current location is not correct, press the button to customize it!</p>
-          </div>
-          <label className='flex cursor-pointer select-none items-center'>
-            <div className='relative'>
-              <input
-                type='checkbox'
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-                className='sr-only'
-              />
-              <div
-                className={`box block h-8 w-14 rounded-full ${isChecked ? 'bg-green-500' : 'bg-black'}`}
-              ></div>
-              <div
-                className={`absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white transition-transform duration-300 ${
-                  isChecked ? 'translate-x-full' : ''
-                }`}
-              ></div>
-            </div>
-          </label>
-        </div>
       </div>
-
-      {isChecked &&
-        <ToggleModal setShowToggleModal={setIsChecked} />
-      }
     </div>
   );
 }

@@ -1,22 +1,20 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Garbage from '../../assets/type-option-icon/garbage.svg';
 import Recycle from '../../assets/type-option-icon/recycle.svg';
 import Food from '../../assets/type-option-icon/food.svg';
 import OptionsButton from './components/OptionsButton';
 import withFadeIn from '@/wrapper/withFadeIn';
-import { PostDataContext } from '@/contexts/PostDataContext';
+import useCreateStore from '@/store/useCreateStore'; // Import Zustand store
 
 const Second = () => {
-  const { setState } = useContext(PostDataContext);
+  // Access the Zustand store state and updater function
+  const { bin, setBin } = useCreateStore((state) => ({
+    bin: state.bin,
+    setBin: state.setBin,
+  }));
 
   const handleOptionClick = (binType: 'garbage' | 'recycling' | 'compost') => {
-    setState(prevState => ({
-      bin: binType,  // Update the bin type
-      // Retain previous states
-      title: prevState?.title, 
-      coordinates: prevState?.coordinates,  
-      photo: prevState?.photo
-    }));
+    setBin(binType); // Update the bin type in Zustand store
   };
 
   return (

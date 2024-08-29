@@ -10,7 +10,7 @@ const Header: React.FC = async () => {
     <div className="flex items-center justify-between mt-3">
       <img
         src="/trashify.png"
-        className="rounded-full ml-10 w-24 h-24" // Adjusted size
+        className="rounded-full ml-10 w-10 h-10 " // Adjusted size
         alt="Trashify Logo"
       />
       <div className="flex space-x-4"> {/* Added space between links */}
@@ -24,7 +24,7 @@ const Header: React.FC = async () => {
         )}
       </div>
       <img 
-        className="rounded-full w-12 h-12 mr-10" // Adjusted size
+        className="rounded-full w-10 h-10 mr-10" // Adjusted size
         src={session?.user.picture || default_user} 
         alt="User profile"
       />

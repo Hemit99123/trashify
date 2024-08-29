@@ -1,27 +1,48 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Photos from '@/assets/regular/photos.svg';
 import Delete from '@/assets/regular/delete-2.svg';
+import useUpdateStore from '@/store/useUpdateStore';
 
 const PhotosScreen: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
+  const { photo, photoBuffer, setPhoto, setPhotoBuffer } = useUpdateStore(state => ({
+    photo: state.photo,
+    photoBuffer: state.photoBuffer,
+    setPhoto: state.setPhoto,
+    setPhotoBuffer: state.setPhotoBuffer
+  }));
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
-      setFile(selectedFiles[0]); // Only set the first selected file
+      const file = selectedFiles[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPhotoBuffer(reader.result as string); // Set the photo buffer as Base64 string
+      };
+      reader.readAsDataURL(file); // Read the file as Base64
+      const photoUrl = URL.createObjectURL(file);
+      setPhoto(photoUrl); // Set the photo URL for display
     }
   };
-
+  
+  
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const droppedFiles = event.dataTransfer.files;
     if (droppedFiles && droppedFiles.length > 0) {
-      setFile(droppedFiles[0]); // Only set the first dropped file
+      const file = droppedFiles[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPhotoBuffer(reader.result as string); // Set the photo buffer as Base64 string
+      };
+      reader.readAsDataURL(file); // Read the file as Base64
+      const photoUrl = URL.createObjectURL(file);
+      setPhoto(photoUrl); // Set the photo URL for display
     }
-  }, []);
-
+  }, [setPhoto, setPhotoBuffer]);
+  
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
@@ -33,16 +54,19 @@ const PhotosScreen: React.FC = () => {
   };
 
   const handleDeleteFile = () => {
-    setFile(null);
+    if (photo) {
+      URL.revokeObjectURL(photo);
+    }
+    setPhotoBuffer(null);
   };
 
   useEffect(() => {
     return () => {
-      if (file) {
-        URL.revokeObjectURL(URL.createObjectURL(file));
+      if (photo) {
+        URL.revokeObjectURL(photo);
       }
     };
-  }, [file]);
+  }, [photo]);
 
   return (
     <div
@@ -63,7 +87,7 @@ const PhotosScreen: React.FC = () => {
       <label htmlFor="fileInput" className='bg-black text-white px-5 py-2.5 rounded-lg font-light text-sm mt-2 cursor-pointer'>
         Browse
       </label>
-      {file && (
+      {photo && (
         <div className='mt-4 text-center'>
           <h3 className='font-semibold text-sm'>Uploaded Photos</h3>
           <p className='text-gray-500 text-xxs'>One item to view</p>
@@ -72,7 +96,7 @@ const PhotosScreen: React.FC = () => {
               <Delete />
             </button>
             <img
-              src={URL.createObjectURL(file)}
+              src={photo}
               alt="Preview"
               className='w-44 h-48 rounded-lg object-cover'
             />

@@ -13,7 +13,10 @@ interface ShareModalProps {
 const ShareModal: React.FC<ShareModalProps> = ({ setShowShareModal }) => {
   return (
     <ModalWrapper onClose={() => setShowShareModal(false)}>
-      <h1 className='text-xl font-medium mb-4'>Share this experience</h1>
+      <div className='relative mb-10'>
+      <h1 className='absolute text-xl font-medium mb-4 top-0 right-4 '>Share this experience</h1>
+
+      </div>
       
       <div className='mx-6'>
         <div className='grid grid-cols-2 gap-4'>

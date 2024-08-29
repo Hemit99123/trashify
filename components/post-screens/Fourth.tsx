@@ -1,24 +1,23 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS
 import { LatLngExpression, icon } from 'leaflet'; // Import LatLngExpression and icon
 import withFadeIn from '@/wrapper/withFadeIn';
-import { PostDataContext } from '@/contexts/PostDataContext';
+import useCreateStore from '@/store/useCreateStore';
 
 const Fourth = () => {
-    const {state} = useContext(PostDataContext)
-    const coordinatesString = state.coordinates || '';
+    // Use Zustand store to get the state
+    const { latitude, longitude } = useCreateStore((state) => ({
+        latitude: state.latitude,
+        longitude: state.longitude
+    }));
 
-    // Split the string by comma
-    const [latString, lngString] = coordinatesString.split(',');
-
-    // Convert strings to numbers
-    const lat = parseFloat(latString);
-    const lng = parseFloat(lngString);
+    // Convert strings to numbers, fallback to 0 if undefined
+    const lat = parseFloat(latitude || '0');
+    const lng = parseFloat(longitude || '0');
 
     // Create the position object
     const position: LatLngExpression = [lat, lng]; // Leaflet expects [lat, lng]
-
 
     // Function to determine container style based on screen width
     const getContainerStyle = () => {
@@ -44,8 +43,10 @@ const Fourth = () => {
 
     return (
         <div>
-            <h1 className='font-medium text-5xl'>Is the pin in the right spot?</h1>
-            <p className='text-gray-400 text-base font-light'>This is just to ensure that your location is correct. Hit back if you need to change anything at all!</p>
+            <h1 className='font-medium text-5xl'>Where the bin is located....</h1>
+            <p className='text-gray-400 text-base font-light'>
+                This is just to show you a visual representation of the coordinates. It will be shown on the below map
+            </p>
             <div style={getContainerStyle()}>
                 <MapContainer 
                     center={position} 
