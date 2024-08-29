@@ -79,7 +79,7 @@ To enhance performance, the database has been optimized with indexing. These ind
 
 ## Caching
 
-To reduce latency from Google API calls, Memcached is used to cache frequently accessed data. This setup is managed through Docker for simplicity and scalability.
+To reduce latency from Google API calls, Memcached is used to cache frequently accessed data. This setup is managed through Docker for simplicity and scalability. All the logic/code for the caching can be found in ROOT DIRECTORY/utils/cache.ts
 
 ## API Documentation
 
