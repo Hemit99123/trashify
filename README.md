@@ -11,12 +11,14 @@ Trashify is an application that allows users to create and locate trash bins nea
 - **Database**: [PostgreSQL](https://www.postgresql.org/)
 - **Caching**: [Memcached](https://memcached.org/) (run on Docker)
 - **Google APIs**: Utilized for location services
+- **RPC Framework**: [gRPC](https://grpc.io/) Utilized for server to server communication as there is an AI mircoservice used by this app. This AI mircoservice was used to find the nearest coordinates in a list based on current coordinates within the Ball Tree algorithm.
 
 ## Features
 
 - **Create Trash Bins**: Users can add new trash bin locations.
 - **Find Nearby Trash Bins**: Users can search for trash bins near their current location.
 - **Optimized Performance**: Includes database indexing and caching to improve response times and reduce latency.
+- **AI Integration**: Using Sci-Kit learn lib, I implemented a Ball Tree algorithm using AI models that were trained!
 
 ## Installation
 
@@ -24,7 +26,7 @@ Trashify is an application that allows users to create and locate trash bins nea
 
 - Node.js (>= 14.x)
 - Docker (for Memcached)
-- PostgreSQL
+- PostgreSQL (can use docker too if you wish)
 
 ### Setup
 
