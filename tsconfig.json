@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.tsx", "app/api/post/route.ts", "components/DeleteItem.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.tsx", "app/api/post/route.ts", "components/DeleteItem.tsx", "app/post/page.tsx", "components/SearchBar.tsx", "components/PostView.tsx"],
   "exclude": ["node_modules"]
 }

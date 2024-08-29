@@ -1,6 +1,6 @@
 "use client";
 
-import { ItemsProp } from "@/types/poststate";
+import { ItemsProp } from "@/types/PostState";
 import React, { useState } from "react";
 import ManageModal from "./ManageModal";
 

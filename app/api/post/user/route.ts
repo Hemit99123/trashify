@@ -1,11 +1,12 @@
 import {prisma} from '@/utils/prisma'
+import { getSession } from '@auth0/nextjs-auth0';
 import { NextRequest, NextResponse } from "next/server";
 
 
 export const GET = async (req: NextRequest) => {
     try {
-        const searchParams = req.nextUrl.searchParams;
-        const email = searchParams.get('email')
+        const session = await getSession()
+        const email = session?.user?.email
 
         if (!email) {
             return NextResponse.json({success: false, error: "Email is not defined properly! Try again!"}, {status: 500})

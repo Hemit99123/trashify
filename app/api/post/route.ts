@@ -1,33 +1,30 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from '@/utils/prisma';
 import { getSession } from "@auth0/nextjs-auth0";
-import { S3Client, CreateMultipartUploadCommand, UploadPartCommand, CompleteMultipartUploadCommand } from "@aws-sdk/client-s3";
-import { randomUUID } from "crypto";
+import { v2 as cloudinary } from 'cloudinary';
 import { helperCacheFunctionCity } from "@/utils/cache";
+import { TYPEOF_STRING_ERROR_MESSAGE } from "@/utils/helper";
 
-const s3 = new S3Client({
-  region: 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY_S3 || '',
-    secretAccessKey: process.env.SECRET_ACCESS_KEY_S3 || '',
-  }
+// Configure Cloudinary
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const BUCKET_NAME = 'mydemobucket121212';
-
-const TYPEOF_STRING_ERROR_MESSAGE = "Invalid string value";
-
 export const GET = async (req: NextRequest) => {
+    const session = await getSession();
+
     const lat = req.nextUrl.searchParams.get('lat') || "";
     const long = req.nextUrl.searchParams.get('long') || "";
 
     try {
-        let city = await helperCacheFunctionCity(lat, long);
+        let city = await helperCacheFunctionCity(lat, long, session);
 
         if (typeof city !== 'string') {
             throw new Error(TYPEOF_STRING_ERROR_MESSAGE);
         }
-
+        
         const data = await prisma.post.findMany({
             where: { city }
         });
@@ -42,68 +39,27 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
     try {
-        const body = await req.json();
-        const { bin, photo, title, longitude, latitude } = body;
-        const city = await helperCacheFunctionCity(latitude, longitude);
-
         const session = await getSession();
-
-        // Generate a unique filename
-        const fileName = `${randomUUID()}.jpg`;
-
-        // Decode base64 photo
-        let photoBuffer: Buffer | undefined;
-        if (photo) {
-            const base64Data = photo.split(',')[1]; // Remove the data URL part
-            photoBuffer = Buffer.from(base64Data, 'base64'); // Convert base64 to Buffer
-        }
-
-        if (!photoBuffer) {
-            throw new Error("No photo data provided");
-        }
-
-        // Start multipart upload (optimized uploading feature provided by AWS)
-        const { UploadId } = await s3.send(new CreateMultipartUploadCommand({
-            Bucket: BUCKET_NAME,
-            Key: fileName,
-            ContentType: 'image/jpeg',
-        }));
-
-        // Upload parts
-        const uploadPromises = [];
-        const chunkSize = 5 * 1024 * 1024; // 5 MB
-        for (let start = 0; start < photoBuffer.length; start += chunkSize) {
-            const end = Math.min(photoBuffer.length, start + chunkSize);
-            const partNumber = Math.floor(start / chunkSize) + 1;
-            const partBuffer = photoBuffer.slice(start, end);
-            uploadPromises.push(
-                s3.send(new UploadPartCommand({
-                    Bucket: BUCKET_NAME,
-                    Key: fileName,
-                    PartNumber: partNumber,
-                    UploadId: UploadId!,
-                    Body: partBuffer,
-                }))
-            );
-        }
-
-        const uploadedParts = await Promise.all(uploadPromises);
-
-        // Complete multipart upload
-        await s3.send(new CompleteMultipartUploadCommand({
-            Bucket: BUCKET_NAME,
-            Key: fileName,
-            UploadId: UploadId!,
-            MultipartUpload: {
-                Parts: uploadedParts.map((part, index) => ({
-                    ETag: part.ETag!,
-                    PartNumber: index + 1,
-                })),
-            },
-        }));
+        const body = await req.json();
+        const { bin, photo, title, long, lat } = body;
+        const city = await helperCacheFunctionCity(lat, long, session);
 
         if (typeof city !== 'string') {
             throw new Error(TYPEOF_STRING_ERROR_MESSAGE);
+        }
+
+        // Upload an image to Cloudinary
+        let photoUrl: string | undefined;
+        let imagePublicID: string;
+
+        if (photo) {
+            const base64Data = photo.split(',')[1]; // Remove the data URL part
+            const uploadResult = await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Data}`);
+            photoUrl = uploadResult.secure_url;
+            // Need this for deletion
+            imagePublicID = uploadResult.public_id;
+        } else {
+            throw new Error("No photo data provided");
         }
 
         // Create a new post record in the database
@@ -112,9 +68,11 @@ export const POST = async (req: NextRequest) => {
                 userId: session?.user?.email,
                 city,
                 bin,
-                photo: `https://s3.us-east-1.amazonaws.com/${BUCKET_NAME}/${fileName}`,
+                photo: photoUrl,
                 title,
-                coor: `${longitude}, ${latitude}`,
+                lat, 
+                long,
+                imagePublicID,
             },
         });
 
@@ -133,18 +91,71 @@ export const DELETE = async (req: NextRequest) => {
 
         const session = await getSession();
 
-        // No need to double check if session is null due to the auth0 middleware logic!
-        await prisma.post.delete({
-            where: {
-                id,
-                userId: session?.user?.email
-            }
-        });
+    // Fetch the post to get the publicID
+    const post = await prisma.post.findUnique({
+        where: { id },
+        select: { imagePublicID: true }
+    });
+    // Delete the post from the database
+    await prisma.post.delete({
+        where: {
+            id,
+            userId: session?.user?.email
+        }
+    }).then(async () => {
+        if (post?.imagePublicID) {
+            // Delete the image from Cloudinary
+            await cloudinary.uploader.destroy(post.imagePublicID);
+        }    
+    })
 
         return NextResponse.json({ success: true, message: "Post deleted successfully" });
 
     } catch (error) {
         console.error("Error deleting post:", error);
         return NextResponse.json({ success: false, message: "Post did not delete" });
+    }
+};
+
+export const PUT = async (req: NextRequest) => {
+    try {
+        const body = await req.json();
+        const { bin, title, lat, long, id, photo } = body;
+        const session = await getSession();
+
+        const post = await prisma.post.findUnique({
+            where: { id },
+            select: { imagePublicID: true }
+        });
+
+        // Build the data clause dynamically
+        const dataClause: any = {};
+
+        // One liner if statements to save lines of code (better dev exp mainly) + less file sizes too (dev optimization)!
+        if (bin) dataClause.bin = bin;
+        if (title) dataClause.title = title;
+        if (lat) dataClause.lat = lat;
+        if (long) dataClause.long = long;
+        
+        await prisma.post.update({
+            where: {
+                id,
+                userId: session?.user?.id
+            },
+            data: dataClause
+        }).then(async () => {
+            if (post?.imagePublicID) {
+                // Delete the old image from Cloudinary
+                await cloudinary.uploader.destroy(post.imagePublicID)
+                    .then(async () => {
+                        const base64Data = photo.split(',')[1]; // Remove the data URL part
+                        await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Data}`);
+                    })
+            }
+        })
+
+    } catch (error) {
+        console.error("Error updating post:", error);
+        return NextResponse.json({ success: false, message: "Post update failed" });
     }
 };

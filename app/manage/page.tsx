@@ -5,30 +5,26 @@ import ActionButton from '@/components/ActionButton';
 import Plus from '@/assets/regular/plus.svg';
 import Search from '@/assets/regular/search-2.svg';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import axios from 'axios';
-import { ItemsProp } from '@/types/poststate';
+import { ItemsProp } from '@/types/PostState';
 import DeleteItem from '@/components/DeleteItem';
 
 const Page = () => {
   const [post, setPost] = useState<ItemsProp[]>([]);
-  const { user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
     const handleGetPost = async () => {
       try {
-        const result = await axios.get(`/api/post/user?email=${user?.email}`);
+        const result = await axios.get(`/api/post/user`);
         setPost(result.data.data);
       } catch (error) {
         console.error("Error fetching posts", error);
       }
     };
 
-    if (user?.email) {
-      handleGetPost();
-    }
-  }, [user?.email]);
+    handleGetPost()
+  }, []);
 
 
   const handleNavigateToPost = () => {
@@ -38,7 +34,7 @@ const Page = () => {
   const handleSearch = async () => {
     const query = prompt('What is your search term?')
 
-    await axios.get(`/api/post/search?query=${query}`)
+    await axios.get(`/api/post/search?title=${query}&email=true`)
       .then((result) => {
         setPost(result.data.data)
       })

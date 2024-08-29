@@ -1,22 +1,24 @@
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["tracing"]
 }
- 
-model Post {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String
-  bin      String
-  photo    String
-  title    String
-  city     String
-  coor     Json
 
-  // Implemented db indexing to avoid linear search when querying for data (scalable solution)
+model Post {
+  id            Int  @id @default(autoincrement())
+  userId        String
+  bin           String
+  photo         String
+  title         String
+  city          String
+  lat           Decimal
+  long          Decimal
+  imagePublicID String
+
+  // Index to optimize queries involving city and userId
   @@index([city, userId])
 }

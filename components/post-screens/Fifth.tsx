@@ -1,14 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import withFadeIn from '@/wrapper/withFadeIn'; // Adjust the import path as needed
-import { PostDataContext } from '@/contexts/PostDataContext';
+import useCreateStore from '@/store/useCreateStore'; // Import Zustand store
 import imageCompression from 'browser-image-compression';
+import { shallow } from 'zustand/shallow';
 
 const FIFTH_MAX_FILE_SIZE_MB = 10; // Maximum file size in MB
 
 const Fifth = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { setState } = useContext(PostDataContext);
+  const setPhoto = useCreateStore((state) => state.setPhoto, shallow)
+
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -35,11 +37,8 @@ const Fifth = () => {
           if (typeof reader.result === 'string') {
             setSelectedImage(reader.result);
 
-            // Update the context with the base64 string
-            setState(prevState => ({
-              ...prevState,
-              photo: reader.result // Update the context with base64 data
-            }));
+            // Update the Zustand store with the base64 string
+            setPhoto(reader.result); // Update the Zustand store with base64 data
           }
         };
 
