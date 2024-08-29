@@ -1,8 +1,11 @@
+"use client";
+
 import React from 'react';
 import Delete from '../assets/regular/delete.svg';
 import Update from '../assets/regular/update.svg';
 import ModalWrapper from '@/wrapper/ModalWrapper';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 interface ShareModalProps {
   setShowManageModal: (show: boolean) => void;
@@ -10,6 +13,8 @@ interface ShareModalProps {
 }
 
 const ManageModal: React.FC<ShareModalProps> = ({ setShowManageModal, id }) => {
+
+  const router = useRouter();
 
   const handleDelete = async () => {
     try {
@@ -25,7 +30,7 @@ const ManageModal: React.FC<ShareModalProps> = ({ setShowManageModal, id }) => {
   };
 
   const handleNavigateToUpdate = () => {
-    alert('navigate')
+    router.push(`/manage/update?id=${id}`)
   };
 
   return (
