@@ -5,13 +5,13 @@ import { useSearchParams } from 'next/navigation';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
+import axios from 'axios';
+import useUpdateStore from '@/store/useUpdateStore';
 import PhotosScreen from '../../../components/update-screens/PhotosScreen';
 import BinTypeScreen from '../../../components/update-screens/BinTypesScreen';
 import TitleScreen from '../../../components/update-screens/TitleScreen';
 import LocationScreen from '../../../components/update-screens/LocationScreen';
 
-// Default icon configuration to prevent issues with missing icon images
 const defaultIcon = new L.Icon({
     iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
     iconSize: [25, 41],
@@ -21,16 +21,53 @@ const defaultIcon = new L.Icon({
     shadowSize: [41, 41],
 });
 
-// Define type for the possible screens
 type Screen = 'photos' | 'binType' | 'title' | 'location' | null;
 
 const Page: React.FC = () => {
     const searchParams = useSearchParams();
-    const id = searchParams.get('id');
+    const id = parseInt(searchParams.get('id') || "");
     const [selectedScreen, setSelectedScreen] = useState<Screen>(null);
     const [isMobileModalOpen, setIsMobileModalOpen] = useState<Screen | null>(null);
-
     const [isDesktop, setIsDesktop] = useState<boolean>(true);
+
+    const { photoBuffer, bin, title, photo, latitude, longitude, userId, setBin, setTitle, setPhoto, setLatitude, setLongitude, setUserId } = useUpdateStore(state => ({
+        bin: state.bin,
+        title: state.title,
+        photo: state.photo,
+        latitude: state.latitude,
+        longitude: state.longitude,
+        userId: state.userId,
+        photoBuffer: state.photoBuffer,
+        setBin: state.setBin,
+        setTitle: state.setTitle,
+        setPhoto: state.setPhoto,
+        setLatitude: state.setLatitude,
+        setLongitude: state.setLongitude,
+        setUserId: state.setUserId,
+    }));
+
+    useEffect(() => {
+        const fetchUniquePost = async () => {
+            try {
+                const response = await axios.get("/api/post/one", {
+                    params: { id }
+                });
+
+                const { data } = response.data;
+                setTitle(data.title);
+                setPhoto(data.photo);
+                setLatitude(data.coor[0]);
+                setLongitude(data.coor[1]);
+                setUserId(data.userId);
+                setBin(data.bin);
+            } catch (err) {
+                console.error("Error fetching post data:", err);
+            }
+        };
+        if (id) {
+            fetchUniquePost();
+        }
+    }, [id, setTitle, setPhoto, setLatitude, setLongitude, setUserId, setBin]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -38,7 +75,7 @@ const Page: React.FC = () => {
         };
 
         window.addEventListener('resize', handleResize);
-        handleResize(); // Check initial size
+        handleResize();
 
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -85,9 +122,26 @@ const Page: React.FC = () => {
         }
     };
 
+    const handleUpdatePost = async () => {
+        await axios.put("/api/post", {
+            id,
+            title,
+            bin, 
+            lat: latitude,
+            long: longitude,
+            photo: photoBuffer
+        })
+        .then(() => {
+            alert('Your bin has been updated')
+        })
+        .catch((err) => {
+            alert("An error occured")
+            throw new Error(err)
+        })
+    }
+
     return (
         <div className="relative flex flex-col lg:flex-row h-screen">
-            {/* Sidebar for desktop */}
             <div className={`lg:w-4/12 lg:border-r border-gray-300 p-4 flex-shrink-0 lg:overflow-y-auto lg:h-full ${isMobileModalOpen ? 'hidden' : 'block'}`}>
                 <h1 className='text-3xl font-medium mb-8'>Bin Editor</h1>
                 <div className="overflow-y-auto hide-scrollbar max-h-[90%]">
@@ -99,7 +153,7 @@ const Page: React.FC = () => {
                             <p className='font-medium'>Photos</p>
                             <p className='text-gray-500 mb-3'>Change your photo</p>
                             <div className='flex justify-center'>
-                                <img src="https://loremflickr.com/cache/resized/65535_53060242254_5101d67715_500_150_nofilter.jpg" className='w-32 h-28 object-cover rounded-lg'/>
+                                <img src={photo || ''} className='w-32 h-28 object-cover rounded-lg'/>
                             </div>
                         </div>
                         <div 
@@ -107,14 +161,14 @@ const Page: React.FC = () => {
                             onClick={() => handleScreenChange('binType')}
                         >
                             <p className='font-medium'>Bin Type</p>
-                            <p className='text-gray-500'>Compost • Edit your type</p>
+                            <p className='text-gray-500'>{bin} • Edit your type</p>
                         </div>
                         <div 
                             className='text-sm border-2 rounded-lg shadow-xl py-3.5 px-4 cursor-pointer w-full lg:w-5/6 hover:scale-95 duration-300'
                             onClick={() => handleScreenChange('title')}
                         >
                             <p className='font-medium'>Title</p>
-                            <p className='text-gray-500 text-lg font-medium'>test ig</p>
+                            <p className='text-gray-500 text-lg font-medium'>{title}</p>
                         </div>
                         <div 
                             className='text-sm border-2 rounded-lg shadow-xl py-3.5 px-4 cursor-pointer w-full lg:w-5/6 hover:scale-95 duration-300'
@@ -122,29 +176,36 @@ const Page: React.FC = () => {
                         >
                             <p className='font-medium'>Location</p>
                             <div className="w-full h-48 mt-4">
-                                <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: '100%', width: '100%' }}>
-                                    <TileLayer
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                    />
-                                    <Marker position={[51.505, -0.09]} icon={defaultIcon}>
-                                        <Popup>
-                                            Your current location
-                                        </Popup>
-                                    </Marker>
-                                </MapContainer>
+                                {latitude && longitude && (
+                                    <MapContainer 
+                                        center={[latitude, longitude]} 
+                                        zoom={13} 
+                                        style={{ height: '100%', width: '100%' }}
+                                    >
+                                        <TileLayer
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                        />
+                                        <Marker 
+                                            position={[latitude, longitude]} 
+                                            icon={defaultIcon}
+                                        >
+                                            <Popup>Your current location</Popup>
+                                        </Marker>
+                                    </MapContainer>
+                                )}
                             </div>
-                            <p className='text-gray-400 mt-2 text-base'>Lat: 21 Long: 22</p>
                         </div>
+
+                        <button className="bg-black text-white px-20 py-4 rounded-full" onClick={handleUpdatePost}>Update</button>
                     </div>
                 </div>
             </div>
 
-            {/* Main content area */}
             {isMobileModalOpen && (
                 <div className='flex text-center mt-8 flex-col'>
                     <h1 className='text-xl font-medium'>You are now in edit mode</h1>
-                    <p className='text-gray-500 text-sm'>Once completed, simply press the X button!</p>
+                    <span className='text-gray-500 text-sm'>Once completed, simply press the X button!</span>
                 </div>
             )}
 
@@ -154,7 +215,6 @@ const Page: React.FC = () => {
                 </div>
             )}
 
-            {/* Mobile modals */}
             <div className={`fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 p-4 flex flex-col transform transition-transform duration-300 ${isMobileModalOpen ? 'bottom-56 translate-y-1/4' : 'translate-y-full'}`}>
                 <button 
                     className='self-end text-gray-500'

@@ -15,8 +15,7 @@ model Post {
   photo         String
   title         String
   city          String
-  lat           Decimal
-  long          Decimal
+  coor          Float[]  @default([]) // Optional: ensure it's an array with exactly two elements, or use validations
   imagePublicID String
 
   // Index to optimize queries involving city and userId

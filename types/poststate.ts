@@ -3,22 +3,42 @@
 export interface StateObjProps {
   bin?: "garbage" | "recycling" | "compost";
   title?: string;
-  latitude?: string; 
-  longitude?: string; 
   photo?: string | ArrayBuffer | null;
   setBin: (binType: 'garbage' | 'recycling' | 'compost') => void;
+  latitude: number | undefined;
+  longitude: number | undefined;
   setTitle: (title: string) => void;
-  setLatitude: (latitude: string) => void;
-  setLongitude: (longitude: string) => void;
+  setLatitude: (latitude: number) => void;
+  setLongitude: (longitude: number) => void;
   setPhoto: (photo: string | ArrayBuffer | null) => void;
 }
 
-
-// Reusing the StateObjProps but changing it for my speific use case through the use of TypeScript transformers (OMIT -> deleting types from interface)
-export interface ItemsProp extends Omit<StateObjProps, 'photo' /* Delete photo key */> {
-  /* Add photo key back with new type */
+export interface StateObjPropsCut extends Omit<StateObjProps, 'photo' | 'setBin' | 'setTitle' | 'setLatitude' | 'setLongitude' | 'setPhoto'> {
+  map(arg0: (item: ItemsProp, index: import("react").Key | null | undefined) => import("react").JSX.Element): import("react").ReactNode;
   id: string;
-  photo: string;
   userId: string;
   city: string;
+  photo: string;
+  coor: [number, number] | undefined;
 }
+
+export interface ItemsProp extends Omit<StateObjProps, 'photo' | 'setBin' | 'setTitle' | 'setLatitude' | 'setLongitude' | 'setPhoto'> {
+  id: string;
+  userId: string;
+  city: string;
+  photo: string;
+  coor: [number, number] | undefined; // Ensure it contains exactly two numbers or is undefined
+}
+
+export interface ExtendedStateObjProps extends Omit<StateObjProps, 'photo' | 'setPhoto'> {
+  userId: string;
+  photo: string;
+  setPhoto: (photo: string) => void;
+  setUserId: (data: string) => void;
+  photoBuffer: string | ArrayBuffer | null;
+  setPhotoBuffer: (photoBuffer: string | ArrayBuffer | null) => void;
+  imagePublicID: string;
+  setImagePublicID: (imagePublicID: string) => void;
+}
+
+

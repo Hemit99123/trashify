@@ -7,7 +7,7 @@ interface PostStoreState {
 }
 
 const usePostStore = create<PostStoreState>((set) => ({
-    state: [] as StateObjPropsCut, // Provide an initial value as an empty object with the type of StateObjPropsCut
+    state: [] as unknown as StateObjPropsCut, // Provide an initial value as an empty object with the type of StateObjPropsCut
     setState: (newState) => set({ state: newState }),
 }));
 

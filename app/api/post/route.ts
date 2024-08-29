@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from '@/utils/prisma';
 import { getSession } from "@auth0/nextjs-auth0";
-import { v2 as cloudinary } from 'cloudinary';
+import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import { helperCacheFunctionCity } from "@/utils/cache";
 import { TYPEOF_STRING_ERROR_MESSAGE } from "@/utils/helper";
 
@@ -70,8 +70,7 @@ export const POST = async (req: NextRequest) => {
                 bin,
                 photo: photoUrl,
                 title,
-                lat, 
-                long,
+                coor: [parseFloat(lat), parseFloat(long)],
                 imagePublicID,
             },
         });
@@ -119,6 +118,8 @@ export const DELETE = async (req: NextRequest) => {
 
 export const PUT = async (req: NextRequest) => {
     try {
+        // setting response type to the api response from cloudinary for typescript validation
+        let response: UploadApiResponse;
         const body = await req.json();
         const { bin, title, lat, long, id, photo } = body;
         const session = await getSession();
@@ -131,31 +132,42 @@ export const PUT = async (req: NextRequest) => {
         // Build the data clause dynamically
         const dataClause: any = {};
 
-        // One liner if statements to save lines of code (better dev exp mainly) + less file sizes too (dev optimization)!
         if (bin) dataClause.bin = bin;
         if (title) dataClause.title = title;
-        if (lat) dataClause.lat = lat;
-        if (long) dataClause.long = long;
-        
+        if (lat && long) dataClause.coor = [lat, long];
+
+        // Handle photo upload and update in one go
+        if (photo) {
+            const base64Data = photo.split(',')[1];
+            response = await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Data}`);
+            dataClause.photo = response.url;
+        }
+
+        // Update the post
         await prisma.post.update({
             where: {
                 id,
                 userId: session?.user?.id
             },
             data: dataClause
-        }).then(async () => {
+        })
+        .then(async () => {
             if (post?.imagePublicID) {
                 // Delete the old image from Cloudinary
-                await cloudinary.uploader.destroy(post.imagePublicID)
-                    .then(async () => {
-                        const base64Data = photo.split(',')[1]; // Remove the data URL part
-                        await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Data}`);
-                    })
+                await cloudinary.uploader.destroy(post.imagePublicID);
             }
         })
+
+        .catch(async () => {
+            // Delete the newly created image as it was not updated into the database solution (since we are catching an error from the promise)
+            await cloudinary.uploader.destroy(response.public_id)
+        })
+
+        return NextResponse.json({ success: true, message: "Updated your post" });
 
     } catch (error) {
         console.error("Error updating post:", error);
         return NextResponse.json({ success: false, message: "Post update failed" });
     }
 };
+
