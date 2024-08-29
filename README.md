@@ -85,13 +85,13 @@ To reduce latency from Google API calls, Memcached is used to cache frequently a
 
 ### Create Trash Bin
 
-- **Endpoint**: `/api/trash-bin`
+- **Endpoint**: `/api/post`
 - **Method**: `POST`
 - **Description**: Creates a new trash bin location.
 
 ### Find Nearby Trash Bins
 
-- **Endpoint**: `/api/trash-bin/nearby`
+- **Endpoint**: `/api/post/nearby`
 - **Method**: `GET`
 - **Description**: Retrieves trash bins near the specified location.
 
