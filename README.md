@@ -1,4 +1,4 @@
-# Trashify
+# 🌱 Trashify 🌱
 
 ## Description
 
