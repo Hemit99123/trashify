@@ -46,6 +46,7 @@ const Page = () => {
     handleGetPosts();
   }, [lat, long, handleGetPosts]);
 
+
   return (
     <div className='flex flex-col items-center'>
       <SearchBar />

@@ -5,19 +5,24 @@ import { ItemsProp } from "@/types/PostState";
 import React, { useState } from "react";
 import Share from "@/assets/regular/share.svg";
 import ShareModal from "./Modals/ShareModal";
+import { useRouter } from "next/navigation";
 
 const PostView = () => {
+  const router = useRouter();
   const posts = usePostStore((state) => state.state);
   const [showShareModal, setShowShareModal] = useState(false);
   const toggleShareModalState = () => {
     setShowShareModal((prev) => !prev);
   };
+  const handleNavigationToOne = (id: string) => {
+    router.push(`/post/one?id=${id}`)
+  }
 
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-4 lg:gap-6 mt-4">
         {posts.map((item: ItemsProp, index: React.Key | null | undefined) => (
-          <div key={index} className="relative flex flex-col">
+          <div key={index} className="cursor-pointer relative flex flex-col" onClick={() => handleNavigationToOne(item.id)}>
             <div>
               <div className="relative w-full aspect-w-16 md:aspect-w-14 aspect-h-12">
                 <img
