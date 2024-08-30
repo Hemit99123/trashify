@@ -2,7 +2,7 @@
 
 import { ItemsProp } from "@/types/PostState";
 import React, { useState } from "react";
-import ManageModal from "./ManageModal";
+import ManageModal from "../Modals/ManageModal";
 
 interface DeleteItemsProps {
   index: number;

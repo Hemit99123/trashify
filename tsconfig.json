@@ -21,6 +21,17 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.tsx", "app/api/post/route.ts", "components/DeleteItem.tsx", "app/post/page.tsx", "components/SearchBar.tsx", "components/PostView.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "components/Common/Header.tsx",
+    "app/api/post/route.ts",
+    "components/Items/DeleteItem.tsx",
+    "app/post/page.tsx",
+    "components/SearchBar.tsx",
+    "components/PostView.tsx"
+  ],
   "exclude": ["node_modules"]
 }

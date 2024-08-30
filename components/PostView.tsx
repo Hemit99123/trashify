@@ -4,7 +4,7 @@ import usePostStore from "@/store/usePostStore";
 import { ItemsProp } from "@/types/PostState";
 import React, { useState } from "react";
 import Share from "@/assets/regular/share.svg";
-import ShareModal from "./ShareModal";
+import ShareModal from "./Modals/ShareModal";
 
 const PostView = () => {
   const posts = usePostStore((state) => state.state);
