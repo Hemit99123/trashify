@@ -4,6 +4,9 @@
 
 Trashify is an application that allows users to create and locate trash bins near them. It provides an easy-to-use interface for managing trash bin locations and finding the nearest ones.
 
+## Mircoservices:
+
+The Trashify app uses one Python gRPC mircoservice to get the nearest location of different coordinates within your city. This is acheived through the SciKit Learn API within the Python environment. The codebase for said mircoservice is sepearetly maintained and can be found on the following link: [click here](https://github.com/Hemit99123/trashify-ai-mirco)!
 ## Tech Stack
 
 - **Frontend & Backend**: [Next.js](https://nextjs.org/)
