@@ -1,5 +1,5 @@
 import React from 'react';
-import ShareButton from './ShareButton';
+import ShareButton from '../Buttons/ShareButton';
 import XSVG from '@/assets/social-icons/x.svg'; 
 import CopyLink from '@/assets/regular/copy-link.svg'
 import Messages from '@/assets/social-icons/message.svg'

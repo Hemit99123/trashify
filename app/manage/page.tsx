@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import ActionButton from '@/components/ActionButton';
+import ActionButton from '@/components/Buttons/ActionButton';
 import Plus from '@/assets/regular/plus.svg';
 import Search from '@/assets/regular/search-2.svg';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { ItemsProp } from '@/types/PostState';
-import DeleteItem from '@/components/DeleteItem';
+import DeleteItem from '@/components/Items/DeleteItem';
 
 const Page = () => {
   const [post, setPost] = useState<ItemsProp[]>([]);

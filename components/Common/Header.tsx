@@ -1,5 +1,5 @@
 import React from "react";
-import LinkItem from "./LinkItem";
+import LinkItem from "../Items/LinkItem";
 import { getSession } from "@auth0/nextjs-auth0";
 
 const Header: React.FC = async () => {
