@@ -17,14 +17,73 @@ interface NearestLocationResponse {
   nearest_location: CoordinateArray;
 }
 
+/**
+ * @swagger
+ * /api/nearest-location:
+ *   get:
+ *     tags:
+ *       - Searching
+ *     description: Get posts near a location using gRPC to find the nearest coordinates
+ *     parameters:
+ *       - in: query
+ *         name: lat
+ *         schema:
+ *           type: number
+ *           format: float
+ *           example: 37.7749
+ *         description: Latitude of the location
+ *       - in: query
+ *         name: long
+ *         schema:
+ *           type: number
+ *           format: float
+ *           example: -122.4194
+ *         description: Longitude of the location
+ *     responses:
+ *       200:
+ *         description: Successfully fetched posts near the specified location
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Post'
+ *                 nearest_location:
+ *                   $ref: '#/components/schemas/CoordinateArray'
+ *       400:
+ *         description: Bad request due to missing or invalid parameters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error due to gRPC or database issues
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 error:
+ *                   type: string
+ */
 export const GET = async (req: NextRequest) => {
   const session = await getSession();
   const searchParams = req.nextUrl.searchParams;
   const latitude = parseFloat(searchParams.get('lat') || "0.0");
   const longitude = parseFloat(searchParams.get('long') || "0.0");
   const city = await helperCacheFunctionCity(latitude.toString(), longitude.toString(), session);
-
-  console.log(city)
 
   if (typeof city !== 'string') {
     throw new Error(TYPEOF_STRING_ERROR_MESSAGE);
@@ -41,7 +100,6 @@ export const GET = async (req: NextRequest) => {
 
     const trashifyPackage = (grpc.loadPackageDefinition(packageDefinition) as any).unary;
     const client = new trashifyPackage.Trashify(
-      /* Use production gRPC server or a local development one */
       process.env.GRPC_SERVER_ADDRESS || 'localhost:50051',
       grpc.credentials.createInsecure()
     );
@@ -51,7 +109,6 @@ export const GET = async (req: NextRequest) => {
       select: { coor: true }
     });
 
-    // Ensure coordinates array is not empty
     if (coordinates.length === 0) {
       return NextResponse.json({ success: false, error: 'No coordinates found.' }, { status: 400 });
     }

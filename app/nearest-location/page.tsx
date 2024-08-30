@@ -18,7 +18,7 @@ export default function EcoPosts() {
         
         // Fetch the nearest posts using the user's coordinates
         try {
-          const response = await axios.get('/api/ai', {
+          const response = await axios.get('/api/nearest-location', {
             params: {
               lat: userLatitude,
               long: userLongitude
