@@ -3,9 +3,10 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS
-import { LatLngExpression, icon } from 'leaflet'; // Import LatLngExpression and icon
+import { LatLngExpression } from 'leaflet'; // Import LatLngExpression and icon
 import withFadeIn from '@/wrapper/withFadeIn';
 import useCreateStore from '@/store/useCreateStore';
+import { customIcon } from '@/utils/helper'
 
 const Fourth = () => {
     // Use Zustand store to get the state
@@ -13,13 +14,6 @@ const Fourth = () => {
         latitude: state.latitude,
         longitude: state.longitude
     }));
-
-    const customIcon = icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', // URL of default Leaflet marker icon
-        iconSize: [25, 41], // Size of the icon
-        iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
-        popupAnchor: [1, -34] // Point from which the popup should open relative to the iconAnchor
-    });
 
     // Convert strings to numbers, fallback to 0 if undefined
     const lat = latitude || 0;
