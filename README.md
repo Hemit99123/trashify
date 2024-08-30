@@ -83,20 +83,8 @@ To reduce latency from Google API calls, Memcached is used to cache frequently a
 
 ## API Documentation
 
-### Create Trash Bin
-
-- **Endpoint**: `/api/post`
-- **Method**: `POST`
-- **Description**: Creates a new trash bin location.
-
-### Find Nearby Trash Bins
-
-- **Endpoint**: `/api/post/nearby`
-- **Method**: `GET`
-- **Description**: Retrieves trash bins near the specified location.
-
-For more details, check the API documentation within the project or the `/api` endpoints.
+We are using Swagger's UI and commenting system for documentation. Check out any of our backend code for an example on how to document for us! To access our documentation, simply visit `/api-docs` in your environment (whether it is local or production)
 
 ## Contributing
 
-If you'd like to contribute to Trashify, please fork the repository and submit a pull request with your changes. We welcome contributions and appreciate your help in improving the application!
+If you'd like to contribute to Trashify, please fork the repository and submit a pull request with your changes. We welcome contributions and appreciate your help in improving the application and keeping us FOSS!
