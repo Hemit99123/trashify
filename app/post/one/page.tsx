@@ -7,19 +7,13 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { ItemsProp } from '@/types/PostState'
 import { useRouter } from 'next/navigation'
-import { icon } from 'leaflet'
+import { customIcon } from '@/utils/helper'
 
 const Page = () => {
   const [uniquePost, setUniquePost] = useState<ItemsProp | null>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const customIcon = icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', // URL of default Leaflet marker icon
-    iconSize: [25, 41], // Size of the icon
-    iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
-    popupAnchor: [1, -34] // Point from which the popup should open relative to the iconAnchor
-});
 
   const id = searchParams.get('id')
 
