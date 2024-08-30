@@ -95,7 +95,7 @@ const fetchAndCacheBounds = async (city: string): Promise<void> => {
 };
 
 // Main function to handle city lookup and caching
-export const helperCacheFunctionCity = async (lat: string, long: string, session: Session | null | undefined): Promise<string | Error> => {
+const helperCacheFunctionCity = async (lat: string, long: string, session: Session | null | undefined): Promise<string | Error> => {
     const email = session?.user?.email;
 
     if (!email) {
@@ -149,3 +149,5 @@ export const helperCacheFunctionCity = async (lat: string, long: string, session
         throw error;
     }
 };
+
+export { helperCacheFunctionCity }
