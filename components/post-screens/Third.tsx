@@ -14,8 +14,8 @@ const Third = () => {
   const handleSuccess = async (result: GeolocationPosition) => {
     // Extract latitude and longitude from the result
     const { latitude, longitude } = result.coords;
-    setLatitude(latitude.toString());
-    setLongitude(longitude.toString());
+    setLatitude(latitude);
+    setLongitude(longitude);
   };
 
   const handleError = (error: GeolocationPositionError) => {

@@ -1,3 +1,5 @@
+'use client';   
+
 import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS
@@ -12,9 +14,16 @@ const Fourth = () => {
         longitude: state.longitude
     }));
 
+    const customIcon = icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', // URL of default Leaflet marker icon
+        iconSize: [25, 41], // Size of the icon
+        iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
+        popupAnchor: [1, -34] // Point from which the popup should open relative to the iconAnchor
+    });
+
     // Convert strings to numbers, fallback to 0 if undefined
-    const lat = parseFloat(latitude || '0');
-    const lng = parseFloat(longitude || '0');
+    const lat = latitude || 0;
+    const lng = longitude || 0;
 
     // Create the position object
     const position: LatLngExpression = [lat, lng]; // Leaflet expects [lat, lng]
@@ -33,13 +42,7 @@ const Fourth = () => {
         };
     };
 
-    // Create a custom icon using a default Leaflet icon URL
-    const customIcon = icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', // URL of default Leaflet marker icon
-        iconSize: [25, 41], // Size of the icon
-        iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
-        popupAnchor: [1, -34] // Point from which the popup should open relative to the iconAnchor
-    });
+
 
     return (
         <div>

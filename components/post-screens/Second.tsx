@@ -8,8 +8,7 @@ import useCreateStore from '@/store/useCreateStore'; // Import Zustand store
 
 const Second = () => {
   // Access the Zustand store state and updater function
-  const { bin, setBin } = useCreateStore((state) => ({
-    bin: state.bin,
+  const { setBin } = useCreateStore((state) => ({
     setBin: state.setBin,
   }));
 
