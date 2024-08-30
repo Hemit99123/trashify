@@ -27,9 +27,10 @@ The Trashify app uses one Python gRPC mircoservice to get the nearest location o
 
 ### Prerequisites
 
-- Node.js (>= 14.x)
-- Docker (for Memcached)
-- PostgreSQL (can use docker too if you wish)
+- Node.js
+- Memcached server
+- PostgreSQL server 
+- The gRPC microservice running 
 
 ### Setup
 
