@@ -36,7 +36,7 @@ The Trashify app uses one Python gRPC mircoservice to get the nearest location o
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/trashify.git
+   git clone https://github.com/Hemit99123/trashify.git
    cd trashify
    ```
 
