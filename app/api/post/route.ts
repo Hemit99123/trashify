@@ -12,6 +12,44 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+
+/**
+ * @swagger
+ * /api/posts:
+ *   get:
+ *     tags:
+ *       - Post
+ *     description: Fetch posts based on latitude and longitude
+ *     parameters:
+ *       - in: query
+ *         name: lat
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Latitude of the location
+ *       - in: query
+ *         name: long
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Longitude of the location
+ *     responses:
+ *       200:
+ *         description: A list of posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Internal server error
+ */
 export const GET = async (req: NextRequest) => {
     const session = await getSession();
 
@@ -37,6 +75,45 @@ export const GET = async (req: NextRequest) => {
     }
 };
 
+/**
+ * @swagger
+ * /api/posts:
+ *   post:
+ *     tags:
+ *       - Post
+ *     description: Create a new post with an image
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bin:
+ *                 type: string
+ *               photo:
+ *                 type: string
+ *                 format: byte
+ *               title:
+ *                 type: string
+ *               lat:
+ *                 type: string
+ *               long:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Post'
+ *       500:
+ *         description: Internal server error
+ */
 export const POST = async (req: NextRequest) => {
     try {
         const session = await getSession();
@@ -56,7 +133,6 @@ export const POST = async (req: NextRequest) => {
             const base64Data = photo.split(',')[1]; // Remove the data URL part
             const uploadResult = await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Data}`);
             photoUrl = uploadResult.secure_url;
-            // Need this for deletion
             imagePublicID = uploadResult.public_id;
         } else {
             throw new Error("No photo data provided");
@@ -83,6 +159,27 @@ export const POST = async (req: NextRequest) => {
     }
 };
 
+/**
+ * @swagger
+ * /api/posts:
+ *   delete:
+ *     tags:
+ *       - Post
+ *     description: Delete a post by ID
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ *       500:
+ *         description: Internal server error
+ */
 export const DELETE = async (req: NextRequest) => {
     try {
         const body = await req.json();
@@ -90,23 +187,23 @@ export const DELETE = async (req: NextRequest) => {
 
         const session = await getSession();
 
-    // Fetch the post to get the publicID
-    const post = await prisma.post.findUnique({
-        where: { id },
-        select: { imagePublicID: true }
-    });
-    // Delete the post from the database
-    await prisma.post.delete({
-        where: {
-            id,
-            userId: session?.user?.email
-        }
-    }).then(async () => {
-        if (post?.imagePublicID) {
-            // Delete the image from Cloudinary
-            await cloudinary.uploader.destroy(post.imagePublicID);
-        }    
-    })
+        // Fetch the post to get the publicID
+        const post = await prisma.post.findUnique({
+            where: { id },
+            select: { imagePublicID: true }
+        });
+        // Delete the post from the database
+        await prisma.post.delete({
+            where: {
+                id,
+                userId: session?.user?.email
+            }
+        }).then(async () => {
+            if (post?.imagePublicID) {
+                // Delete the image from Cloudinary
+                await cloudinary.uploader.destroy(post.imagePublicID);
+            }    
+        })
 
         return NextResponse.json({ success: true, message: "Post deleted successfully" });
 
@@ -116,9 +213,40 @@ export const DELETE = async (req: NextRequest) => {
     }
 };
 
+/**
+ * @swagger
+ * /api/posts:
+ *   put:
+ *     tags:
+ *       - Post
+ *     description: Update an existing post
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *               bin:
+ *                 type: string
+ *               title:
+ *                 type: string
+ *               lat:
+ *                 type: string
+ *               long:
+ *                 type: string
+ *               photo:
+ *                 type: string
+ *                 format: byte
+ *     responses:
+ *       200:
+ *         description: Post updated successfully
+ *       500:
+ *         description: Internal server error
+ */
 export const PUT = async (req: NextRequest) => {
     try {
-        // setting response type to the api response from cloudinary for typescript validation
         let response: UploadApiResponse;
         const body = await req.json();
         const { bin, title, lat, long, id, photo } = body;
@@ -170,4 +298,3 @@ export const PUT = async (req: NextRequest) => {
         return NextResponse.json({ success: false, message: "Post update failed" });
     }
 };
-
