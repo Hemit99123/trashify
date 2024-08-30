@@ -48,13 +48,7 @@ The Trashify app uses one Python gRPC mircoservice to get the nearest location o
 
 3. **Configure environment variables:**
 
-   Create a `.env` file in the root directory and add the following:
-
-   ```plaintext
-   DATABASE_URL=postgresql://user:password@localhost:5432/yourdatabase
-   GOOGLE_API_KEY=your_google_api_key
-   MEMCACHED_URL=localhost:11211
-   ```
+   Create a `.env` file in the root directory and add all the variables that are defined in the example file (.env.example) 
 
 4. **Run Memcached in Docker:**
 
