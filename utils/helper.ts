@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic'; // Import dynamic if using Next.js or similar framework
 
-export const sanitizeKey = (key: string): string => key.replace(/\s+/g, '_').trim();
+const sanitizeKey = (key: string): string => key.replace(/\s+/g, '_').trim();
 
-export const TYPEOF_STRING_ERROR_MESSAGE = "Invalid string value";
+const TYPEOF_STRING_ERROR_MESSAGE = "Invalid string value";
 
 // Dynamically import the Leaflet icon on the client side
 const customIcon = dynamic(
@@ -17,4 +17,4 @@ const customIcon = dynamic(
   { ssr: false } // Disable server-side rendering for this module
 );
 
-export { customIcon };
+export { sanitizeKey, TYPEOF_STRING_ERROR_MESSAGE, customIcon };
