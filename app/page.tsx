@@ -7,7 +7,7 @@ import usePostStore from '@/store/usePostStore';
 import PostView from '@/components/PostView';
 import Refresh from '@/assets/regular/refresh.svg'
 
-const HomeView = () => {
+const Page = () => {
   const setPosts = usePostStore((state) => state.setState)
   const [lat, setLat] = useState<number | null>(null);
   const [long, setLong] = useState<number | null>(null);
@@ -64,4 +64,4 @@ const HomeView = () => {
   );
 }
 
-export default HomeView;
+export default Page;

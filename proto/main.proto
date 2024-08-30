@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package unary;
+
+service Trashify {
+  rpc GetNearestCoor(CoordinateSet) returns (NearestLocationResponse) {}
+}
+
+message CoordinateSet {
+  repeated CoordinateArray coordinates = 1;
+  CoordinateArray query_location = 2;
+}
+
+message CoordinateArray {
+  repeated double coor = 1; // Changed to 1
+}
+
+message NearestLocationResponse {
+  CoordinateArray nearest_location = 1;
+}

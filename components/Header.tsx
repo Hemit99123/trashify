@@ -6,6 +6,12 @@ const Header: React.FC = async () => {
   const default_user = 'https://cdn.icon-icons.com/icons2/2622/PNG/512/gui_user_slash_icon_157553.png'
   const session = await getSession()
 
+  const NAV_ITEMS = [
+    {title: "Home", target_path: "/"},
+    {title: "Post", target_path: "/post"},
+    {title: "Manage", target_path:"/manage"},
+    {title: "Nearest Bin", target_path:"/nearest-location"}
+  ]
   return (
     <div className="flex items-center justify-between mt-3">
       <img
@@ -14,9 +20,10 @@ const Header: React.FC = async () => {
         alt="Trashify Logo"
       />
       <div className="flex space-x-4"> {/* Added space between links */}
-        <LinkItem title="Home" target_path="/" />
-        <LinkItem title="Post" target_path="/post" />
-        <LinkItem title="Manage" target_path="/manage" />
+        {NAV_ITEMS.map((post) => (
+          <LinkItem title={post.title} target_path={post.target_path} />
+        ))}
+
         {session?.user.email ? (
           <LinkItem title="Sign out" target_path="/api/auth/logout" />
         ) : (
