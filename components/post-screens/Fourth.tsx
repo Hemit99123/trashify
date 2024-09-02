@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L, { LatLngExpression } from 'leaflet';
 import withFadeIn from '@/wrapper/withFadeIn';
 import useCreateStore from '@/store/useCreateStore';
+import { customIcon } from '@/utils/helper'
 
 // Create the custom icon directly in the file
 const customIcon = L.icon({

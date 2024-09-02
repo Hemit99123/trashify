@@ -8,6 +8,7 @@ import 'leaflet/dist/leaflet.css'
 import { ItemsProp } from '@/types/PostState'
 import { useRouter } from 'next/navigation'
 import L from 'leaflet'
+import { customIcon } from '@/utils/helper'
 
 const Page = () => {
   const [uniquePost, setUniquePost] = useState<ItemsProp | null>(null)
@@ -21,6 +22,7 @@ const Page = () => {
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
+
 
   const id = searchParams.get('id')
 
