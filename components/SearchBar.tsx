@@ -3,14 +3,14 @@ import Search from "@/assets/regular/search-1.svg";
 import axios from "axios";
 import usePostStore from "@/store/usePostStore";
 
-const SearchBar= () => {
+const SearchBar = () => {
   const [email, setEmail] = useState("");
   const setState = usePostStore((state) => state.setState)
 
   const handleSearch = async () => {
     try {
       console.log('Searching for:', email);
-      const result = await axios.get('/api/post/search', { params: { email } });
+      const result = await axios.get('/api/search/', { params: { email } });
       console.log('Search results:', result.data);
       setState(result.data.data);
       setEmail("");

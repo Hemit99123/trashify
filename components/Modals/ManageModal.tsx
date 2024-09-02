@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import Delete from '../assets/regular/delete.svg';
-import Update from '../assets/regular/update.svg';
+import Delete from '@/assets/regular/delete.svg';
+import Update from '@/assets/regular/update.svg';
 import ModalWrapper from '@/wrapper/ModalWrapper';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';

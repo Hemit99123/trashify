@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 /**
  * @swagger
- * /api/posts/user:
+ * /api/search/me:
  *   get:
  *     tags:
  *       - Searching
