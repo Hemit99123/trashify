@@ -1,32 +1,35 @@
-'use client';   
+'use client';
 
 import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS
-import { LatLngExpression } from 'leaflet'; // Import LatLngExpression and icon
+import 'leaflet/dist/leaflet.css';
+import L, { LatLngExpression } from 'leaflet';
 import withFadeIn from '@/wrapper/withFadeIn';
 import useCreateStore from '@/store/useCreateStore';
-import { customIcon } from '@/utils/helper'
+
+// Create the custom icon directly in the file
+const customIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+});
 
 const Fourth = () => {
-    // Use Zustand store to get the state
     const { latitude, longitude } = useCreateStore((state) => ({
         latitude: state.latitude,
         longitude: state.longitude
     }));
 
-    // Convert strings to numbers, fallback to 0 if undefined
     const lat = latitude || 0;
     const lng = longitude || 0;
 
-    // Create the position object
-    const position: LatLngExpression = [lat, lng]; // Leaflet expects [lat, lng]
+    const position: LatLngExpression = [lat, lng];
 
-    // Function to determine container style based on screen width
     const getContainerStyle = () => {
         const isMobile = window.innerWidth <= 768;
         return {
-            width: isMobile ? '100%' : '80%', // Full width on mobile
+            width: isMobile ? '100%' : '80%',
             height: '60vh',
             display: 'flex',
             justifyContent: 'center',
@@ -35,8 +38,6 @@ const Fourth = () => {
             marginTop: '15px'
         };
     };
-
-
 
     return (
         <div>

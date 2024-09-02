@@ -16,7 +16,7 @@ const Page = () => {
   useEffect(() => {
     const handleGetPost = async () => {
       try {
-        const result = await axios.get(`/api/post/user`);
+        const result = await axios.get(`/api/search/me`);
         setPost(result.data.data);
       } catch (error) {
         console.error("Error fetching posts", error);
@@ -34,7 +34,7 @@ const Page = () => {
   const handleSearch = async () => {
     const query = prompt('What is your search term?')
 
-    await axios.get(`/api/post/search?title=${query}&email=true`)
+    await axios.get(`/api/search?title=${query}&email=true`)
       .then((result) => {
         setPost(result.data.data)
       })

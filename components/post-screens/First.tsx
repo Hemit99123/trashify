@@ -16,7 +16,7 @@ const First = () => {
       </div>
       <div className='mt-4 md:mt-0 md:ml-8 flex-shrink-0'>
         <Image
-          src='/airbnb.png'
+          src='/hero-post.png'
           alt='HeroImage'
           width={100}
           height={100}
