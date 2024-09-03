@@ -10,7 +10,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024); // 1024px is the 'lg' breakpoint in Tailwind
+      setIsMobile(window.innerWidth > 1024); // 1024px is the 'lg' breakpoint in Tailwind
     };
 
     // Check on initial render
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
   return (
     <header className="mt-3">
       <Suspense fallback={<div>Loading...</div>}>
-        {isMobile ? <Mobile /> : <Desktop />}
+        {isMobile ? <Desktop /> : <Mobile />}
       </Suspense>
     </header>
   );
